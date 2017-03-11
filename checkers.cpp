@@ -24,7 +24,7 @@ void newGame(int board[8][8]){
 
         //Row 1
         if ((i+1) == 1){
-          if ((j+1)%2 == 1){
+          if (j%2 == 1){
             board[i][j] = 1;
           }
           else{
@@ -34,7 +34,7 @@ void newGame(int board[8][8]){
 
         //Row 2
         else if ((i+1) == 2){
-          if ((j+1)%2 == 0){
+          if (j%2 == 0){
             board[i][j] = 1;
           }
           else{
@@ -44,7 +44,7 @@ void newGame(int board[8][8]){
 
         //Row 3
          else if ((i+1) == 3){
-          if ((j+1)%2 == 1){
+          if (j%2 == 1){
             board[i][j] = 1;
           }
           else{
@@ -54,7 +54,7 @@ void newGame(int board[8][8]){
 
         //Row 6
         else if ((i+1) == 6){
-          if ((j+1)%2 == 1){
+          if (j%2 == 0){
             board[i][j] = 2;
           }
           else{
@@ -64,7 +64,7 @@ void newGame(int board[8][8]){
 
         //Row 7
         else if ((i+1) == 7){
-          if ((j+1)%2 == 0){
+          if (j%2 == 1){
             board[i][j] = 2;
           }
           else{
@@ -74,7 +74,7 @@ void newGame(int board[8][8]){
 
         //Row 8
         else if ((i+1) == 8){
-          if ((j+1)%2 == 1){
+          if (j%2 == 0){
             board[i][j] = 2;
           }
           else{
