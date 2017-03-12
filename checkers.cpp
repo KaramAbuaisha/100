@@ -19,12 +19,12 @@ void displayBoard(){
 
 void newGame(){
   //I is row, J is col
-
+  int redcounter = 0, blackcounter = 0;
   for (int i = 0; i < 8;i++){
       for (int j = 0; j < 8; j++){
         //Setting default pieces
 
-        // //Black pieces 1
+        //Black pieces 1
         if (i < 3){
           if (i%2 == 0){
             if (j%2 == 0){
@@ -37,6 +37,7 @@ void newGame(){
             }
           }
         }
+        //Red pieces 2
         else if (i > 4){
           if (i%2 == 0){
             if (j%2 == 0){
@@ -55,13 +56,30 @@ void newGame(){
 }
 
 bool checkWinner(){
-  //Check if all pieces of a type are gone
+  if(redCounter == 12 || blackCounter == 12){
+    return true;
+  }
+  else{
   return false;
+  }
 }
 
 //Turns a checker piece into a king
-void makeKing(){
-
+void checkKing(){
+  if(blacksTurn){
+    for(int j = 0; j<8; j += 2){
+      if(board[7][j] == 1){
+        board[7][j] == 3;
+      }
+    }
+  }
+  else{
+    for(int j = 1; j<8; j += 2){
+      if(board[0][j] == 2){
+        board[7][j] == 4;
+      } 
+    }
+  }
 }
 
 bool canCapture(bool blacksTurn){
@@ -129,39 +147,77 @@ bool legalMove(bool blacksTurn, int currentRow, int currentCol, int toRow, int t
   cout << endl << currentRow << currentCol << toRow << toCol << endl;
   //For nonking black pieces - single diagonal move, can only move forward, left/right, piece must be there and destination should be empty
   if (blacksTurn){
-    if (( (toRow - currentRow) == 1) && (abs(toCol - currentCol) == 1) && (board[currentRow][currentCol] == 1) && (board[toRow][toCol] == 0) ){
+    if ((toRow - currentRow) == 1) && (abs(toCol - currentCol)) == 1) && (board[currentRow][currentCol] == 1) && (board[toRow][toCol] == 0)){
       legal = true;
     }
-    if ( (toRow - currentRow == 2) && (toCol - currentCol == 2) && (board[currentRow][currentCol] == 1) && board[toRow][toCol] == 0
-      && board[currentRow + 1][currentCol + 1] == 2 ){
+    else if ((toRow - currentRow == 2) && (toCol - currentCol == 2) && (board[currentRow][currentCol] == 1) && (board[toRow][toCol] == 0)
+      && (board[currentRow + 1][currentCol + 1] == 2)){
       jumpRow = currentRow + 1;
       jumpCol = currentCol +1;
-      return true;
+      blackCounter += 1; // for end game check
+      legal = true;
     }
-    else if( (toRow - currentRow == 2) && (toCol - currentCol == -2) && board[currentRow][currentCol] == 1 && board[toRow][toCol] == 0
-    && board[currentRow + 1][currentCol - 1]){
+    else if((toRow - currentRow == 2) && (toCol - currentCol == -2) && (board[currentRow][currentCol] == 1) && (board[toRow][toCol] == 0)
+    && (board[currentRow + 1][currentCol - 1])){
       jumpRow = currentRow + 1;
       jumpCol = currentCol - 1;
+      blackCounter += 1; // for end game check
+      legal = true;
+    }
+    //king pieces
+    else if ((abs(toRow - currentRow) == 1) && (abs(toCol - currentCol)) == 1) && (board[currentRow][currentCol] == 3) && (board[toRow][toCol] == 0)){
+      legal = true;
+    }
+    else if ((abs(toRow - currentRow) == 2) && (toCol - currentCol == 2) && (board[currentRow][currentCol] == 3) && (board[toRow][toCol] == 0)
+      && (board[currentRow + 1][currentCol + 1] == 2)){
+      jumpRow = currentRow + 1;
+      jumpCol = currentCol +1;
+      blackCounter += 1; // for end game check
+      legal = true;
+    }
+    else if (abs(toRow - currentRow) == 2) && (toCol - currentCol == -2) && (board[currentRow][currentCol] == 3) && (board[toRow][toCol] == 0)
+    && (board[currentRow + 1][currentCol - 1])){
+      jumpRow = currentRow + 1;
+      jumpCol = currentCol - 1;
+      blackCounter += 1; // for end game check
       legal = true;
     }
   }
-
   //For nonking red pieces - single diagonal move, can only move forward, left/right, piece must be there and destination should be empty
-  if (!blacksTurn){
-    if ( (toRow - currentRow == -1) && (abs(toCol - currentCol) == 1) && (board[currentRow][currentCol] == 2) && (board[toRow][toCol] == 0) ){
+  else{
+    if ((toRow - currentRow) == 1) && (abs(toCol - currentCol)) == 1) && (board[currentRow][currentCol] == 2) && (board[toRow][toCol] == 0)){
       legal = true;
     }
-  }
-  
-  //For king black pieces
-  if (blacksTurn){
-    if (( abs(toRow - currentRow) == 1) && (abs(toCol - currentCol) == 1) && (board[currentRow][currentCol] == 3) && (board[toRow][toCol] == 0) ){
+    else if ((toRow - currentRow == 2) && (toCol - currentCol == 2) && (board[currentRow][currentCol] == 2) && (board[toRow][toCol] == 0)
+      && (board[currentRow + 1][currentCol + 1] == 2)){
+      jumpRow = currentRow + 1;
+      jumpCol = currentCol +1;
+      redCounter += 1; // for end game check
       legal = true;
     }
-  }
-  
-  if (!blacksTurn){
-    if (( abs(toRow - currentRow) == 1) && (abs(toCol - currentCol) == 1) && (board[currentRow][currentCol] == 4) && (board[toRow][toCol] == 0) ){
+    else if((toRow - currentRow == 2) && (toCol - currentCol == -2) && (board[currentRow][currentCol] == 2) && (board[toRow][toCol] == 0)
+    && (board[currentRow + 1][currentCol - 1])){
+      jumpRow = currentRow + 1;
+      jumpCol = currentCol - 1;
+      redCounter += 1; // for end game check
+      legal = true;
+    }
+    //king pieces
+    else if ((abs(toRow - currentRow) == 1) && (abs(toCol - currentCol)) == 1) && (board[currentRow][currentCol] == 4) && (board[toRow][toCol] == 0)){
+      legal = true;
+    }
+    else if ((abs(toRow - currentRow) == 2) && (toCol - currentCol == 2) && (board[currentRow][currentCol] == 4) && (board[toRow][toCol] == 0)
+      && (board[currentRow + 1][currentCol + 1] == 2)){
+      jumpRow = currentRow + 1;
+      jumpCol = currentCol +1;
+      redCounter += 1; // for end game check
+      legal = true;
+    }
+    else if (abs(toRow - currentRow) == 2) && (toCol - currentCol == -2) && (board[currentRow][currentCol] == 4) && (board[toRow][toCol] == 0)
+    && (board[currentRow + 1][currentCol - 1])){
+      jumpRow = currentRow + 1;
+      jumpCol = currentCol - 1;
+      redCounter += 1; // for end game check
       legal = true;
     }
   }
@@ -173,6 +229,7 @@ bool legalMove(bool blacksTurn, int currentRow, int currentCol, int toRow, int t
   // }
   
   if (legal){
+    checkKing();
     updateBoard(blacksTurn, currentRow,currentCol,toRow,toCol,jumpRow,jumpCol);
   }
   return legal;
