@@ -1,16 +1,17 @@
-const float wheelRadius = 22.5;		// mm
-const float convert = PI / 180 * wheelRadius;
+const float WHEEL_RADIUS = 22.5;		// mm
+const float CONVERT = PI / 180 * WHEEL_RADIUS;
 
-float angToDist(float angle, float c = convert) {
-	return angle * c;
+float angToDist(float angle) {
+	return angle * CONVERT;
 }
 
-float distToAng(float distance, float c = convert) {
-	return distance / c;
+float distToAng(float distance) {
+	return distance / CONVERT;
 }
 
 void move(float distance, int power) {
-	// do all calculations in terms of degrees
+	/* Simply runs motor at set power until
+	   correct distance is reached */
 	nMotorEncoder[motorA] = 0;
 	distance = distToAng(distance);
 	motor[motorA] = power;
@@ -20,6 +21,9 @@ void move(float distance, int power) {
 }
 
 void gradMove(float distance, int maxPow, int startPow) {
+	/* Increases motor power linearly up to the
+	   midpoint then linearly decreases it until
+	   the correct distance is reached */
 	int currentPos = 0, power = 0;
 
 	nMotorEncoder[motorA] = 0;
@@ -37,6 +41,9 @@ void gradMove(float distance, int maxPow, int startPow) {
 }
 
 void movePD(float distance, float kp, float kd) {
+	/* Moves the motor a certain distance with a
+	   PD controller. kp and kd are gains for the
+	   proportional and differential parts. */
 	nMotorEncoder[motorA] = 0;
 	distance = distToAng(distance);
 
@@ -53,12 +60,12 @@ void movePD(float distance, float kp, float kd) {
 		displayString(5, "power = %f", kp * error + kd * (error - prevError));
 
 		motor[motorA] = kp * error + kd * (error - prevError);
-		wait1Msec(100);
+		wait1Msec(10);
 	}
 	motor[motorA] = 0;
 }
 
 task main()
 {
-	gradMove(1500, 75, 10);
+	movePD(500, 1, 2);
 }
