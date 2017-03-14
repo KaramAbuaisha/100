@@ -109,7 +109,7 @@ void makeKing(){
 
 }
 
-//Checks if a piece is a king, turn it into a king if it i
+//Checks if a piece is a king, turn it into a king if it is
 void checkKing(){
   if(blacksTurn){
     for(int j = 0; j<8; j += 2){
