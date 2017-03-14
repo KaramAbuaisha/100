@@ -95,8 +95,13 @@ bool whosTurn(){
   //later make true if it's black turn and false if red turn
 }
 
-bool checkWinner(int board[8][8]){
-  return false;
+bool checkWinner(){
+  if(redCounter == 12 || blackCounter == 12){ 
+    return true;
+  }
+  else{
+    return false;
+  }
 }
 
 //Turns a checker piece into a king
@@ -104,9 +109,22 @@ void makeKing(){
 
 }
 
-//Checks if a piece is a king
+//Checks if a piece is a king, turn it into a king if it i
 void checkKing(){
-
+  if(blacksTurn){
+    for(int j = 0; j<8; j += 2){
+      if(board[7][j] == 1){
+        board[7][j] == 3;
+      }
+    }
+  }
+  else{
+    for(int j = 1; j<8; j += 2){
+      if(board[0][j] == 2){
+        board[7][j] == 4;
+      } 
+    }
+  }
 }
 
 //Checks if a move is legal, returns a boolean, called by the makeMove
@@ -160,9 +178,8 @@ void makeMove(int board[8][8]){
 }
 
 int main() {
-    int counter = 0;
+    int counter = 0, redCounter = 0, blackCounter = 0; //Have to increment counters when pieces are captured
     int board[8][8];
-
     newGame(board);
     boardOutput(board);
 
