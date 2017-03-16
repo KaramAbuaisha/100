@@ -81,70 +81,103 @@ bool checkWinner(){
 //Turns a checker piece into a king
 void checkKing(bool blacksTurn){
   if(blacksTurn){
-    for(int j = 0; j<8; j += 2){
+    for(int j = 1; j<8; j += 2){
       if(board[7][j] == 1){
-        board[7][j] == 3;
+        board[7][j] = 3;
       }
     }
   }
   else{
-    for(int j = 1; j<8; j += 2){
+    for(int j = 0; j<8; j += 2){
       if(board[0][j] == 2){
-        board[0][j] == 4;
+        board[0][j] = 4;
       } 
     }
   }
 }
 
 bool canCapture(bool blacksTurn){
-  //Must capture pieces if available
-
-for (int i = 0; i < 8; i++){ //iterating through rows
-  for (int j = 0; j < 8; j++){ //iterating through columns
-  
-    if (blacksTurn){
-      //Black Piece Cases
-      if ( (board[i][j] == 1 || board[i][j] == 3) && j < 6 && ((board[i+1][j+1] == 2 || board[i+1][j+1] == 4) && (board[i+2][j+2] == 0))){
-        return true;
+  for (int i = 0; i < 8; i++){ //iterating through rows
+    for (int j = 0; j < 8; j++){ //iterating through columns
+    
+      if (blacksTurn){
+        //Black Piece Cases
+        if ( (board[i][j] == 1 || board[i][j] == 3) && j < 6 && ((board[i+1][j+1] == 2 || board[i+1][j+1] == 4) && (board[i+2][j+2] == 0))){
+          return true;
+        }
+        else if ( (board[i][j] == 1 || board[i][j] == 3) && j > 1 && ((board[i+1][j-1] == 2 || board[i+1][j-1] == 4) && (board[i-2][j-2] == 0))){
+          return true;
+        }
+        
+        //Extra King Checks
+        else if (board[i][j] == 3 && j < 6 && ( ((board[i-1][j+1] == 2) || (board[i-1][j+1] == 4)) && (board[i-2][j+2] == 0))){
+          return true;
+        }
+        else if  (board[i][j] == 3 && j > 1 && ( ((board[i-1][j-1] == 2 || board[i-1][j-1] == 4 )) && (board[i-2][j-2] == 0))){
+          return true;
+        }
       }
-      else if ( (board[i][j] == 1 || board[i][j] == 3) && j > 1 && ((board[i+1][j-1] == 2 || board[i+1][j-1] == 4) && (board[i-2][j-2] == 0))){
-        return true;
-      }
-      
-      //Extra King Checks
-      else if (board[i][j] == 3 && j < 6 && ( ((board[i-1][j+1] == 2) || (board[i-1][j+1] == 4)) && (board[i-2][j+2] == 0))){
-        return true;
-      }
-      else if  (board[i][j] == 3 && j > 1 && ( ((board[i-1][j-1] == 2 || board[i-1][j-1] == 4 )) && (board[i-2][j-2] == 0))){
-        return true;
-      }
-    }
-    else{
-      //Red Piece Cases
-      if ((board[i][j] == 2 || board[i][j] == 4) && j < 6 && ((board[i-1][j+1] == 1 || board[i-1][j+1] == 3) && (board[i-2][j+2] == 0))){
-        return true;
-      }
-      else if  ((board[i][j] == 2 || board[i][j] == 4) && j > 1 && ((board[i-1][j-1] == 1 || board[i-1][j-1] == 3) && (board[i-2][j-2] == 0))){
-        return true;
-      }
-      
-  
-      else if (board[i][j] == 4 && j < 6 && ( ((board[i+1][j+1] == 1 || board[i+1][j+1] == 3)) && (board[i+2][j+2] == 0))){
-        return true;
-      }
-      else if  (board[i][j] == 4 && j > 1 && (((board[i+1][j-1] == 1 || board[i+1][j-1] == 3)) && (board[i+2][j-2] == 0))){
-        return true;
+      else{
+        //Red Piece Cases
+        if ((board[i][j] == 2 || board[i][j] == 4) && j < 6 && ((board[i-1][j+1] == 1 || board[i-1][j+1] == 3) && (board[i-2][j+2] == 0))){
+          return true;
+        }
+        else if  ((board[i][j] == 2 || board[i][j] == 4) && j > 1 && ((board[i-1][j-1] == 1 || board[i-1][j-1] == 3) && (board[i-2][j-2] == 0))){
+          return true;
+        }
+        //Extra King Checks
+        else if (board[i][j] == 4 && j < 6 && ( ((board[i+1][j+1] == 1 || board[i+1][j+1] == 3)) && (board[i+2][j+2] == 0))){
+          return true;
+        }
+        else if  (board[i][j] == 4 && j > 1 && (((board[i+1][j-1] == 1 || board[i+1][j-1] == 3)) && (board[i+2][j-2] == 0))){
+          return true;
+        }
       }
     }
-  }
   }
   return false;
 }
 
-void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int toCol,int jumpRow, int jumpCol){
+bool doubleCapture(bool blacksTurn, int row, int col){
+  if (blacksTurn){
+    //Black Piece Cases
+    if ( (board[row][col] == 1 || board[row][col] == 3) && col < 6 && ((board[row+1][col+1] == 2 || board[row+1][col+1] == 4) && (board[row+2][col+2] == 0))){
+      return true;
+    }
+    else if ( (board[row][col] == 1 || board[row][col] == 3) && col > 1 && ((board[row+1][col-1] == 2 || board[row+1][col-1] == 4) && (board[row+2][col-2] == 0))){
+      return true;
+    }
+    
+    //Extra King Checks
+    else if (board[row][col] == 3 && col < 6 && ( ((board[row-1][col+1] == 2) || (board[row-1][col+1] == 4)) && (board[row-2][col+2] == 0))){
+      return true;
+    }
+    else if  (board[row][col] == 3 && col > 1 && ( ((board[row-1][col-1] == 2 || board[row-1][col-1] == 4 )) && (board[row-2][col-2] == 0))){
+      return true;
+    }
+  }
+  else{
+    //Red Piece Cases
+    if ((board[row][col] == 2 || board[row][col] == 4) && col < 6 && ((board[row-1][col+1] == 1 || board[row-1][col+1] == 3) && (board[row-2][col+2] == 0))){
+      return true;
+    }
+    else if  ((board[row][col] == 2 || board[row][col] == 4) && col > 1 && ((board[row-1][col-1] == 1 || board[row-1][col-1] == 3) && (board[row-2][col-2] == 0))){
+      return true;
+    }
+    //Extra King Checks
+    else if (board[row][col] == 4 && col < 6 && ( ((board[row+1][col+1] == 1 || board[row+1][col+1] == 3)) && (board[row+2][col+2] == 0))){
+      return true;
+    }
+    else if  (board[row][col] == 4 && col > 1 && (((board[row+1][col-1] == 1 || board[row+1][col-1] == 3)) && (board[row+2][col-2] == 0))){
+      return true;
+    }
+  } 
+  return false;
+}
+void updateBoard(bool &blacksTurn, int currentRow,int currentCol, int toRow, int toCol,int jumpRow, int jumpCol){
   board[toRow][toCol] = board[currentRow][currentCol];
   board[currentRow][currentCol] = 0;
-  
+  checkKing(blacksTurn);
   if (jumpRow != -1){
     board[jumpRow][jumpCol] = 0;
     if(blacksTurn){
@@ -153,11 +186,14 @@ void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int 
     else{
       blackCounter +=1;
     }
+    if(doubleCapture(blacksTurn, toRow, toCol)){
+      blacksTurn = !blacksTurn;
+    }
   }
 }
 
 //Checks if a move is legal, returns a boolean, called by the makeMove
-bool legalMove(bool blacksTurn, int currentRow, int currentCol, int toRow, int toCol){
+bool legalMove(bool &blacksTurn, int currentRow, int currentCol, int toRow, int toCol){
   //Legal move conditions, 1 diagonal, jump over piece, jump over multiple pieces - will be hard to implement
   
   int jumpRow = -1, jumpCol = -1;
@@ -189,14 +225,14 @@ bool legalMove(bool blacksTurn, int currentRow, int currentCol, int toRow, int t
 
   //Red moves
   else{
-    if (( (toRow - currentRow) == 1) && (abs(toCol - currentCol) == 1) && (board[currentRow][currentCol] == 2) && (board[toRow][toCol] == 0) ){
+    if (( (toRow - currentRow) == -1) && (abs(toCol - currentCol) == 1) && (board[currentRow][currentCol] == 2) && (board[toRow][toCol] == 0) ){
       legal = true;
     }
     else if ( (abs(toRow - currentRow) == 1) && (abs(toCol - currentCol) == 1) && (board[currentRow][currentCol] == 4) && (board[toRow][toCol] == 0) ){
       legal = true;
     }
     //Jumps
-    else if ( (toRow - currentRow == 2) && (abs(toCol - currentCol) == 2) && (board[currentRow][currentCol] == 2) && board[toRow][toCol] == 0 && (board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 1 || board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 3)){
+    else if ( (toRow - currentRow == -2) && (abs(toCol - currentCol) == 2) && (board[currentRow][currentCol] == 2) && board[toRow][toCol] == 0 && (board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 1 || board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 3)){
       jumpRow = (toRow+currentRow)/2;
       jumpCol = (toCol+currentCol)/2;
       legal = true;
@@ -214,8 +250,8 @@ bool legalMove(bool blacksTurn, int currentRow, int currentCol, int toRow, int t
   return legal;
 }
 
-void makeMove(bool blacksTurn){
-  int currentRow = 0, currentCol = 0, toRow = 0, toCol = 0;
+void makeMove(bool &blacksTurn){
+  int currentRow = -1, currentCol = -1, toRow = -1, toCol = -1;
   string curr = "x", to = "x";
 
   cout << endl << "Force? " << canCapture(blacksTurn); // DEBUGGINGPURPOSE
@@ -229,14 +265,14 @@ void makeMove(bool blacksTurn){
 
     toCol = to.at(0) - 97;
     toRow = to.at(1) - '0' - 1;
-    cout << currentRow << currentCol <<toRow << toCol;
+    cout << currentRow << currentCol <<endl<<toRow << toCol;
 
   } while (!legalMove(blacksTurn,currentRow,currentCol,toRow,toCol));
 }
 
 int main() {
     int counter = 0;
-    int blacksTurn = true;
+    bool blacksTurn = true;
     
     newGame();
     displayBoard();
