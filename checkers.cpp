@@ -6,6 +6,10 @@ using namespace std;
 int board[8][8];
 int blackCounter = 0, redCounter = 0;
 
+
+void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int toCol,int jumpRow, int jumpCol);
+void anotherCapture(bool &blacksTurn, int currentRow, int currentCol);
+
 void displayBoard(){
   for (int i = 7; i >= 0;i--){
       for (int j = 0; j < 8; j++){
@@ -174,12 +178,15 @@ bool doubleCapture(bool blacksTurn, int row, int col){
   } 
   return false;
 }
-void updateBoard(bool &blacksTurn, int currentRow,int currentCol, int toRow, int toCol,int jumpRow, int jumpCol){
+
+void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int toCol,int jumpRow, int jumpCol){
   board[toRow][toCol] = board[currentRow][currentCol];
   board[currentRow][currentCol] = 0;
   checkKing(blacksTurn);
   if (jumpRow != -1){
     board[jumpRow][jumpCol] = 0;
+    //run move function 
+    //run remove captured piece function
     if(blacksTurn){
       redCounter += 1;
     }
@@ -187,13 +194,18 @@ void updateBoard(bool &blacksTurn, int currentRow,int currentCol, int toRow, int
       blackCounter +=1;
     }
     if(doubleCapture(blacksTurn, toRow, toCol)){
-      blacksTurn = !blacksTurn;
+      displayBoard();
+      anotherCapture(blacksTurn, toRow, toCol);
     }
+  }
+  else{
+    //run diagonal moving function
   }
 }
 
+
 //Checks if a move is legal, returns a boolean, called by the makeMove
-bool legalMove(bool &blacksTurn, int currentRow, int currentCol, int toRow, int toCol){
+bool legalMove(bool blacksTurn, int currentRow, int currentCol, int toRow, int toCol){
   //Legal move conditions, 1 diagonal, jump over piece, jump over multiple pieces - will be hard to implement
   
   int jumpRow = -1, jumpCol = -1;
@@ -250,7 +262,64 @@ bool legalMove(bool &blacksTurn, int currentRow, int currentCol, int toRow, int 
   return legal;
 }
 
-void makeMove(bool &blacksTurn){
+bool legalMove2(bool blacksTurn, int currentRow, int currentCol, int toRow, int toCol){
+//Legal move conditions for second capture, jumps only
+  
+  int jumpRow = -1, jumpCol = -1;
+  bool legal = false;
+
+  cout << endl << currentRow << currentCol << toRow << toCol << endl;
+
+  //Black moves
+  if (blacksTurn){
+    //Jumps
+    if ( (toRow - currentRow == 2) && (abs(toCol - currentCol) == 2) && (board[currentRow][currentCol] == 1) && board[toRow][toCol] == 0 && (board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 2 || board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 4)){
+      jumpRow = (toRow+currentRow)/2;
+      jumpCol = (toCol+currentCol)/2;
+      legal = true;
+    }
+    else if( (abs(toRow - currentRow) == 2) && (abs(toCol - currentCol) == 2) && (board[currentRow][currentCol] == 3) && board[toRow][toCol] == 0 && (board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 2 || board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 4)){
+      jumpRow = (toRow+currentRow)/2;
+      jumpCol = (toCol+currentCol)/2;
+      legal = true;
+    }
+  }
+
+  //Red moves
+  else{
+    //Jumps
+    if ( (toRow - currentRow == -2) && (abs(toCol - currentCol) == 2) && (board[currentRow][currentCol] == 2) && board[toRow][toCol] == 0 && (board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 1 || board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 3)){
+      jumpRow = (toRow+currentRow)/2;
+      jumpCol = (toCol+currentCol)/2;
+      legal = true;
+    }
+    else if( (abs(toRow - currentRow) == 2) && (abs(toCol - currentCol) == 2) && (board[currentRow][currentCol] == 4) && board[toRow][toCol] == 0 && (board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 1 || board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 3)){
+      jumpRow = (toRow+currentRow)/2;
+      jumpCol = (toCol+currentCol)/2;
+      legal = true;
+    }
+  }
+
+  if (legal){
+    updateBoard(blacksTurn, currentRow,currentCol,toRow,toCol,jumpRow,jumpCol);
+  }
+  return legal;
+}
+void anotherCapture(bool &blacksTurn, int currentRow, int currentCol){
+  int toRow = -1, toCol = -1;
+  string to = "x";
+  do{
+    cout<<endl<<"Second capture, to where?"<<endl;
+    cin>>to;
+    toCol = to.at(0) - 97;
+    toRow = to.at(1) - '0' - 1;
+    cout << currentRow << currentCol <<endl<<toRow << toCol;
+  }while(abs(toRow-currentRow) == 1 || abs(toCol-currentCol) == 1
+  || !legalMove2(blacksTurn,currentRow,currentCol,toRow,toCol));
+}
+
+
+void makeMove(bool blacksTurn){
   int currentRow = -1, currentCol = -1, toRow = -1, toCol = -1;
   string curr = "x", to = "x";
 
@@ -271,7 +340,6 @@ void makeMove(bool &blacksTurn){
 }
 
 int main() {
-    int counter = 0;
     bool blacksTurn = true;
     
     newGame();
