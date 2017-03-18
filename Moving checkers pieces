@@ -1,0 +1,64 @@
+void magnetUp(){
+  
+}
+
+void magnetDown(){
+  
+}
+
+void moveForward(){
+  
+}
+
+void moveBackward(){
+  
+}
+
+void moveLeft(){
+  
+}
+
+void moveRight(){
+  
+}
+
+void moveDiagonal(int x, int y){
+  //motion code
+  cout<<"move done"<<endl;
+}
+
+//if jump code
+void getinPosition
+
+void jump(int currentRow, int currentCol, int toRow, int toCol){
+  
+  deltaY = toRow - currrentRow;
+  deltaX = toCol - currentCol;
+  
+  magnetUp();
+  
+  if (deltaY > 0){
+    moveForward();
+    if (deltaX > 0){
+      moveDiagonal(1, 1);
+      moveRight();
+    }
+    else{ //deltaX < 0
+      moveDiagonal(-1, 1);
+      moveLeft();
+    }
+  } 
+  
+  else{ //deltaY < 0
+    moveBackward();
+    if (deltaX > 0){
+      moveDiagonal(1, -1);
+      moveRight();
+    }
+    else{ //deltaX < 0
+      moveDiagonal(-1, -1);
+      moveLeft();
+    }
+  }
+  magnetDown();
+}
