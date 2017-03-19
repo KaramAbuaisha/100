@@ -6,11 +6,10 @@ using namespace std;
 int board[8][8];
 int blackCounter = 0, redCounter = 0;
 
-void displayBoard(bool showID = false);   // set showID to true to represent pieces as numbers
 void newGame();
+void displayBoard(bool showID = false);   // set showID to true to represent pieces as numbers
 bool checkWinner();
 void checkKing(bool blacksTurn);
-bool canCapture(bool blacksTurn);
 bool canCapture(bool blacksTurn);
 bool doubleCapture(bool blacksTurn, int row, int col);
 bool legalMove(bool blacksTurn, int currentRow, int currentCol, int toRow, int toCol);
