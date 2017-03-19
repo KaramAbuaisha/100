@@ -132,34 +132,34 @@ bool canCapture(bool blacksTurn){
 
       if (blacksTurn){
         //Black Piece Cases
-        if ( (board[i][j] == 1 || board[i][j] == 3) && j < 6 && ((board[i+1][j+1] == 2 || board[i+1][j+1] == 4) && (board[i+2][j+2] == 0))){
+        if ( (board[i][j] == 1 || board[i][j] == 3) && j < 6 && i < 6 && ((board[i+1][j+1] == 2 || board[i+1][j+1] == 4) && (board[i+2][j+2] == 0))){
           return true;
         }
-        else if ( (board[i][j] == 1 || board[i][j] == 3) && j > 1 && ((board[i+1][j-1] == 2 || board[i+1][j-1] == 4) && (board[i-2][j-2] == 0))){
+        else if ( (board[i][j] == 1 || board[i][j] == 3) && j > 1 && i < 6 && ((board[i+1][j-1] == 2 || board[i+1][j-1] == 4) && (board[i-2][j-2] == 0))){
           return true;
         }
 
         //Extra King Checks
-        else if (board[i][j] == 3 && j < 6 && ( ((board[i-1][j+1] == 2) || (board[i-1][j+1] == 4)) && (board[i-2][j+2] == 0))){
+        else if (board[i][j] == 3 && j < 6 && i > 1 && ( ((board[i-1][j+1] == 2) || (board[i-1][j+1] == 4)) && (board[i-2][j+2] == 0))){
           return true;
         }
-        else if  (board[i][j] == 3 && j > 1 && ( ((board[i-1][j-1] == 2 || board[i-1][j-1] == 4 )) && (board[i-2][j-2] == 0))){
+        else if  (board[i][j] == 3 && j > 1 && i > 1 && ( ((board[i-1][j-1] == 2 || board[i-1][j-1] == 4 )) && (board[i-2][j-2] == 0))){
           return true;
         }
       }
       else{
         //Red Piece Cases
-        if ((board[i][j] == 2 || board[i][j] == 4) && j < 6 && ((board[i-1][j+1] == 1 || board[i-1][j+1] == 3) && (board[i-2][j+2] == 0))){
+        if ((board[i][j] == 2 || board[i][j] == 4) && j < 6 && i > 1 && ((board[i-1][j+1] == 1 || board[i-1][j+1] == 3) && (board[i-2][j+2] == 0))){
           return true;
         }
-        else if  ((board[i][j] == 2 || board[i][j] == 4) && j > 1 && ((board[i-1][j-1] == 1 || board[i-1][j-1] == 3) && (board[i-2][j-2] == 0))){
+        else if  ((board[i][j] == 2 || board[i][j] == 4) && j > 1 && i > 1 && ((board[i-1][j-1] == 1 || board[i-1][j-1] == 3) && (board[i-2][j-2] == 0))){
           return true;
         }
         //Extra King Checks
-        else if (board[i][j] == 4 && j < 6 && ( ((board[i+1][j+1] == 1 || board[i+1][j+1] == 3)) && (board[i+2][j+2] == 0))){
+        else if (board[i][j] == 4 && j < 6 && i < 6 && ( ((board[i+1][j+1] == 1 || board[i+1][j+1] == 3)) && (board[i+2][j+2] == 0))){
           return true;
         }
-        else if  (board[i][j] == 4 && j > 1 && (((board[i+1][j-1] == 1 || board[i+1][j-1] == 3)) && (board[i+2][j-2] == 0))){
+        else if  (board[i][j] == 4 && j > 1 && i < 6 && (((board[i+1][j-1] == 1 || board[i+1][j-1] == 3)) && (board[i+2][j-2] == 0))){
           return true;
         }
       }
@@ -171,34 +171,34 @@ bool canCapture(bool blacksTurn){
 bool doubleCapture(bool blacksTurn, int row, int col){
   if (blacksTurn){
     //Black Piece Cases
-    if ( (board[row][col] == 1 || board[row][col] == 3) && col < 6 && ((board[row+1][col+1] == 2 || board[row+1][col+1] == 4) && (board[row+2][col+2] == 0))){
+    if ( (board[row][col] == 1 || board[row][col] == 3) && col < 6 && row < 6 &&  ((board[row+1][col+1] == 2 || board[row+1][col+1] == 4) && (board[row+2][col+2] == 0))){
       return true;
     }
-    else if ( (board[row][col] == 1 || board[row][col] == 3) && col > 1 && ((board[row+1][col-1] == 2 || board[row+1][col-1] == 4) && (board[row+2][col-2] == 0))){
+    else if ( (board[row][col] == 1 || board[row][col] == 3) && col > 1 && row < 6 &&  ((board[row+1][col-1] == 2 || board[row+1][col-1] == 4) && (board[row+2][col-2] == 0))){
       return true;
     }
 
     //Extra King Checks
-    else if (board[row][col] == 3 && col < 6 && ( ((board[row-1][col+1] == 2) || (board[row-1][col+1] == 4)) && (board[row-2][col+2] == 0))){
+    else if (board[row][col] == 3 && col < 6 && row > 1 && ( ((board[row-1][col+1] == 2) || (board[row-1][col+1] == 4)) && (board[row-2][col+2] == 0))){
       return true;
     }
-    else if  (board[row][col] == 3 && col > 1 && ( ((board[row-1][col-1] == 2 || board[row-1][col-1] == 4 )) && (board[row-2][col-2] == 0))){
+    else if  (board[row][col] == 3 && col > 1 && row > 1 && ( ((board[row-1][col-1] == 2 || board[row-1][col-1] == 4 )) && (board[row-2][col-2] == 0))){
       return true;
     }
   }
   else{
     //Red Piece Cases
-    if ((board[row][col] == 2 || board[row][col] == 4) && col < 6 && ((board[row-1][col+1] == 1 || board[row-1][col+1] == 3) && (board[row-2][col+2] == 0))){
+    if ((board[row][col] == 2 || board[row][col] == 4) && col < 6 && row > 1 && ((board[row-1][col+1] == 1 || board[row-1][col+1] == 3) && (board[row-2][col+2] == 0))){
       return true;
     }
-    else if  ((board[row][col] == 2 || board[row][col] == 4) && col > 1 && ((board[row-1][col-1] == 1 || board[row-1][col-1] == 3) && (board[row-2][col-2] == 0))){
+    else if  ((board[row][col] == 2 || board[row][col] == 4) && col > 1 && row > 1 && ((board[row-1][col-1] == 1 || board[row-1][col-1] == 3) && (board[row-2][col-2] == 0))){
       return true;
     }
     //Extra King Checks
-    else if (board[row][col] == 4 && col < 6 && ( ((board[row+1][col+1] == 1 || board[row+1][col+1] == 3)) && (board[row+2][col+2] == 0))){
+    else if (board[row][col] == 4 && col < 6 && row < 6 &&  ( ((board[row+1][col+1] == 1 || board[row+1][col+1] == 3)) && (board[row+2][col+2] == 0))){
       return true;
     }
-    else if  (board[row][col] == 4 && col > 1 && (((board[row+1][col-1] == 1 || board[row+1][col-1] == 3)) && (board[row+2][col-2] == 0))){
+    else if  (board[row][col] == 4 && col > 1 && row < 6 &&  (((board[row+1][col-1] == 1 || board[row+1][col-1] == 3)) && (board[row+2][col-2] == 0))){
       return true;
     }
   }
