@@ -101,12 +101,72 @@ void moveZ(bool up) {
 	else {
 		motor[motorC] = 10;
 	}
-	while (true) {
-		if (abs(nMotorEncoder[motorC] - prev) < 0.1) {
-			break;
-		}
+	while (!(abs(nMotorEncoder[motorC] - prev) < 0.1)) {
 		prev = nMotorEncoder[motorC];
 		wait1Msec(50);
 	}
 	motor[motorC] = 0;
+}
+void magnetUp(){
+  
+}
+
+void magnetDown(){
+  
+}
+
+void moveForward(){
+  
+}
+
+void moveBackward(){
+  
+}
+
+void moveLeft(){
+  
+}
+
+void moveRight(){
+  
+}
+
+void moveDiagonal(int x, int y){
+
+}
+
+//if jump code
+void getinPosition(short )
+
+void jump(int currentRow, int currentCol, int toRow, int toCol){
+  
+  deltaY = toRow - currrentRow;
+  deltaX = toCol - currentCol;
+  
+  moveZ(true);//magnet up
+  
+  if (deltaY > 0){
+    moveForward();
+    if (deltaX > 0){
+      moveDiagonal(1, 1);
+      moveRight();
+    }
+    else{ //deltaX < 0
+      moveDiagonal(-1, 1);
+      moveLeft();
+    }
+  } 
+  
+  else{ //deltaY < 0
+    moveBackward();
+    if (deltaX > 0){
+      moveDiagonal(1, -1);
+      moveRight();
+    }
+    else{ //deltaX < 0
+      moveDiagonal(-1, -1);
+      moveLeft();
+    }
+  }
+  moveZ(false);//magnet down
 }
