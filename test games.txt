@@ -1,0 +1,23 @@
+GAME 1:
+a3 b4
+b6 c5
+b2 a3
+f6 e5
+e3 d4
+g7 f6
+d4 b6
+c7 a5
+g3 f4
+f6 g5
+b4 c5
+e5 g3
+
+DOUBLE-JUMP:
+f2 h4}
+h4 f6}
+
+DOUBLE-JUMP FAILURE (1):
+e7 g5
+c5 e7
+
+(1): Tries to do second capture even though it would require the piece to move beyond the bounds of the board. Entering 'c9' causes the piece to move beyond the bounds of the board.

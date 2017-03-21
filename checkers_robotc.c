@@ -1,3 +1,4 @@
+#include "testFeatures.c"
 int board[8][8];
 
 struct position {
@@ -71,4 +72,6 @@ void updateBoard(bool blacksTurn, position current, position to, position jump) 
 }
 
 task main() {
+	happy();
+	while (nNxtButtonPressed == -1) {}
 }
