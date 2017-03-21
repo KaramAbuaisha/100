@@ -1,5 +1,5 @@
-#include <iostream>
-#include <cmath>
+   #include <iostream>
+#include <cmath> 
 using namespace std;
 
 //Global 2D Array for board
@@ -126,82 +126,221 @@ void checkKing(bool blacksTurn){
 }
 
 bool canCapture(bool blacksTurn){
-  for (int i = 0; i < 8; i++){ //iterating through rows
-    for (int j = 0; j < 8; j++){ //iterating through columns
+	bool chk1, chk2, chk3, chk;
+	for (int i = 0; i < 8; i++){ //iterating through rows
+		for (int j = 0; j < 8; j++){ //iterating through columns
 
-      if (blacksTurn){
-        //Black Piece Cases
-        if ( (board[i][j] == 1 || board[i][j] == 3) && j < 6 && i < 6 && ((board[i+1][j+1] == 2 || board[i+1][j+1] == 4) && (board[i+2][j+2] == 0))){
-          return true;
-        }
-        else if ( (board[i][j] == 1 || board[i][j] == 3) && j > 1 && i < 6 && ((board[i+1][j-1] == 2 || board[i+1][j-1] == 4) && (board[i-2][j-2] == 0))){
-          return true;
-        }
+			if (blacksTurn){
+				//Black Piece Cases
+				chk1 = (board[i][j] == 1 || board[i][j] == 3);
+				
+				chk2 = (j < 6 && i < 6 && board[i+2][j+2] == 0);
+				chk3 = (board[i+1][j+1] == 2 || board[i+1][j+1] == 4);
+				chk = (chk1 && chk2 && chk3);
+				
+				if (chk){
+					return true;
+				}
+				chk2 = (j > 1 && i < 6 && board[i+2][j-2] == 0);
+				chk3 = (board[i+1][j-1] == 2 || board[i+1][j-1] == 4);
+				chk = (chk1 && chk2 && chk3);
+				if (chk){
+					return true;
+				}
+				//Extra King Checks
+				chk1 = (board[i][j] == 3);
+				
+				chk2 = ((j < 6) && (i > 1) && (board[(int)(i-2)][(int)(j+2)] == 0));
+				chk3 = (board[(int)(i-1)][(int)(j+1)] == 2 || board[(int)(i-1)][(int)(j+1)] == 4);
+				chk = (chk1 && chk2 && chk3);
+				
+				if (chk){
+					return true;
+				}
+				chk2 = (j > 1 && i > 1 && board[(int)(i-2)][(int)(j-2)] == 0);
+				chk3 = board[(int)(i-1)][(int)(j-1)] == 2 || board[(int)(i-1)][(int)(j-1)] == 4;
+				chk = (chk1 && chk2 && chk3);
+				if  (chk){
+					return true;
+				}
+			}
+			else{
+				//Red Piece Cases
+				chk1 = (board[i][j] == 2 || board[i][j] == 4);
+				
+				chk2 = (j < 6 && i > 1 && board[(int)(i-2)][(int)(j+2)] == 0);
+				chk3 = (board[(int)(i-1)][(int)(j+1)] == 1 || board[(int)(i-1)][(int)(j+1)] == 3);
+				chk = (chk1 && chk2 && chk3);
+				if (chk){
+					return true;
+				}
+				chk2 = (j > 1 && i > 1 && board[(int)(i-2)][(int)(j-2)] == 0);
+				chk3 = (board[(int)(i-1)][(int)(j-1)] == 1 || board[(int)(i-1)][(int)(j-1)] == 3);
+				chk = (chk1 && chk2 && chk3);
+				if  (chk){
+					return true;
+				}
+				//Extra King Checks
+				chk1 = (board[i][j] == 4);
+				
+				chk2 = (j < 6 && i < 6 && board[i+2][j+2] == 0);
+				chk3 = (board[i+1][j+1] == 1 || board[i+1][j+1] == 3);
+				chk = (chk1 && chk2 && chk3);
+				if (chk){
+					return true;
+				}
+				chk2 = (j > 1 && i < 6 && board[i+2][j-2] == 0);
+				chk3 = (board[i+1][j-1] == 1 || board[i+1][j-1] == 3);
+				chk = (chk1 && chk2 && chk3);
+				if  (chk){
+					return true;
+				}
+			}
 
-        //Extra King Checks
-        else if (board[i][j] == 3 && j < 6 && i > 1 && ( ((board[i-1][j+1] == 2) || (board[i-1][j+1] == 4)) && (board[i-2][j+2] == 0))){
-          return true;
-        }
-        else if  (board[i][j] == 3 && j > 1 && i > 1 && ( ((board[i-1][j-1] == 2 || board[i-1][j-1] == 4 )) && (board[i-2][j-2] == 0))){
-          return true;
-        }
-      }
-      else{
-        //Red Piece Cases
-        if ((board[i][j] == 2 || board[i][j] == 4) && j < 6 && i > 1 && ((board[i-1][j+1] == 1 || board[i-1][j+1] == 3) && (board[i-2][j+2] == 0))){
-          return true;
-        }
-        else if  ((board[i][j] == 2 || board[i][j] == 4) && j > 1 && i > 1 && ((board[i-1][j-1] == 1 || board[i-1][j-1] == 3) && (board[i-2][j-2] == 0))){
-          return true;
-        }
-        //Extra King Checks
-        else if (board[i][j] == 4 && j < 6 && i < 6 && ( ((board[i+1][j+1] == 1 || board[i+1][j+1] == 3)) && (board[i+2][j+2] == 0))){
-          return true;
-        }
-        else if  (board[i][j] == 4 && j > 1 && i < 6 && (((board[i+1][j-1] == 1 || board[i+1][j-1] == 3)) && (board[i+2][j-2] == 0))){
-          return true;
-        }
-      }
-    }
-  }
-  return false;
+		}
+	}
+	return false;
 }
 
 bool doubleCapture(bool blacksTurn, int row, int col){
-  if (blacksTurn){
-    //Black Piece Cases
-    if ( (board[row][col] == 1 || board[row][col] == 3) && col < 6 && row < 6 &&  ((board[row+1][col+1] == 2 || board[row+1][col+1] == 4) && (board[row+2][col+2] == 0))){
-      return true;
-    }
-    else if ( (board[row][col] == 1 || board[row][col] == 3) && col > 1 && row < 6 &&  ((board[row+1][col-1] == 2 || board[row+1][col-1] == 4) && (board[row+2][col-2] == 0))){
-      return true;
-    }
-
-    //Extra King Checks
-    else if (board[row][col] == 3 && col < 6 && row > 1 && ( ((board[row-1][col+1] == 2) || (board[row-1][col+1] == 4)) && (board[row-2][col+2] == 0))){
-      return true;
-    }
-    else if  (board[row][col] == 3 && col > 1 && row > 1 && ( ((board[row-1][col-1] == 2 || board[row-1][col-1] == 4 )) && (board[row-2][col-2] == 0))){
-      return true;
-    }
-  }
-  else{
-    //Red Piece Cases
-    if ((board[row][col] == 2 || board[row][col] == 4) && col < 6 && row > 1 && ((board[row-1][col+1] == 1 || board[row-1][col+1] == 3) && (board[row-2][col+2] == 0))){
-      return true;
-    }
-    else if  ((board[row][col] == 2 || board[row][col] == 4) && col > 1 && row > 1 && ((board[row-1][col-1] == 1 || board[row-1][col-1] == 3) && (board[row-2][col-2] == 0))){
-      return true;
-    }
-    //Extra King Checks
-    else if (board[row][col] == 4 && col < 6 && row < 6 &&  ( ((board[row+1][col+1] == 1 || board[row+1][col+1] == 3)) && (board[row+2][col+2] == 0))){
-      return true;
-    }
-    else if  (board[row][col] == 4 && col > 1 && row < 6 &&  (((board[row+1][col-1] == 1 || board[row+1][col-1] == 3)) && (board[row+2][col-2] == 0))){
-      return true;
-    }
-  }
-  return false;
+	bool chk1, chk2, chk3, chk;
+	if (blacksTurn){
+		//Black Piece Cases
+		chk1 = (board[row][col] == 1 || board[row][col] == 3);
+		
+		chk2 = (col < 6 && row < 6 && board[row+2][col+2] == 0);
+		chk3 = (board[row+1][col+1] == 2 || board[row+1][col+1] == 4);
+		chk = (chk1 && chk2 && chk3);
+		
+		if (chk){
+			return true;
+		}
+		chk2 = (col > 1 && row < 6 && board[row+2][col-2] == 0);
+		chk3 = (board[row+1][col-1] == 2 || board[row+1][col-1] == 4);
+		chk = (chk1 && chk2 && chk3);
+		if (chk){
+			return true;
+		}
+		//Extra King Checks
+		chk1 = (board[row][col] == 3);
+		
+		chk2 = ((col < 6) && (row > 1) && (board[(int)(row-2)][(int)(col+2)] == 0));
+		chk3 = (board[(int)(row-1)][(int)(col+1)] == 2 || board[(int)(row-1)][(int)(col+1)] == 4);
+		chk = (chk1 && chk2 && chk3);
+		
+		if (chk){
+			return true;
+		}
+		chk2 = (col > 1 && row > 1 && board[(int)(row-2)][(int)(col-2)] == 0);
+		chk3 = board[(int)(row-1)][(int)(col-1)] == 2 || board[(int)(row-1)][(int)(col-1)] == 4;
+		chk = (chk1 && chk2 && chk3);
+		if  (chk){
+			return true;
+		}
+	}
+	else{
+		//Red Piece Cases
+		chk1 = (board[row][col] == 2 || board[row][col] == 4);
+		
+		chk2 = (col < 6 && row > 1 && board[(int)(row-2)][(int)(col+2)] == 0);
+		chk3 = (board[(int)(row-1)][(int)(col+1)] == 1 || board[(int)(row-1)][(int)(col+1)] == 3);
+		chk = (chk1 && chk2 && chk3);
+		if (chk){
+			return true;
+		}
+		chk2 = (col > 1 && row > 1 && board[(int)(row-2)][(int)(col-2)] == 0);
+		chk3 = (board[(int)(row-1)][(int)(col-1)] == 1 || board[(int)(row-1)][(int)(col-1)] == 3);
+		chk = (chk1 && chk2 && chk3);
+		if  (chk){
+			return true;
+		}
+		//Extra King Checks
+		chk1 = (board[row][col] == 4);
+		
+		chk2 = (col < 6 && row < 6 && board[row+2][col+2] == 0);
+		chk3 = (board[row+1][col+1] == 1 || board[row+1][col+1] == 3);
+		chk = (chk1 && chk2 && chk3);
+		if (chk){
+			return true;
+		}
+		chk2 = (col > 1 && row < 6 && board[row+2][col-2] == 0);
+		chk3 = (board[row+1][col-1] == 1 || board[row+1][col-1] == 3);
+		chk = (chk1 && chk2 && chk3);
+		if  (chk){
+			return true;
+		}
+	}
+	return false;
+}
+bool doubleCapture(bool blacksTurn, int row, int col){
+	bool chk1, chk2, chk3, chk;
+	if (blacksTurn){
+		//Black Piece Cases
+		chk1 = (board[row][col] == 1 || board[row][col] == 3);
+		
+		chk2 = (col < 6 && row < 6 && board[row+2][col+2] == 0);
+		chk3 = (board[row+1][col+1] == 2 || board[row+1][col+1] == 4);
+		chk = (chk1 && chk2 && chk3);
+		
+		if (chk){
+			return true;
+		}
+		chk2 = (col > 1 && row < 6 && board[row+2][col-2] == 0);
+		chk3 = (board[row+1][col-1] == 2 || board[row+1][col-1] == 4);
+		chk = (chk1 && chk2 && chk3);
+		if (chk){
+			return true;
+		}
+		//Extra King Checks
+		chk1 = (board[row][col] == 3);
+		
+		chk2 = ((col < 6) && (row > 1) && (board[(int)(row-2)][(int)(col+2)] == 0));
+		chk3 = (board[(int)(row-1)][(int)(col+1)] == 2 || board[(int)(row-1)][(int)(col+1)] == 4);
+		chk = (chk1 && chk2 && chk3);
+		
+		if (chk){
+			return true;
+		}
+		chk2 = (col > 1 && row > 1 && board[(int)(row-2)][(int)(col-2)] == 0);
+		chk3 = board[(int)(row-1)][(int)(col-1)] == 2 || board[(int)(row-1)][(int)(col-1)] == 4;
+		chk = (chk1 && chk2 && chk3);
+		if  (chk){
+			return true;
+		}
+	}
+	else{
+		//Red Piece Cases
+		chk1 = (board[row][col] == 2 || board[row][col] == 4);
+		
+		chk2 = (col < 6 && row > 1 && board[(int)(row-2)][(int)(col+2)] == 0);
+		chk3 = (board[(int)(row-1)][(int)(col+1)] == 1 || board[(int)(row-1)][(int)(col+1)] == 3);
+		chk = (chk1 && chk2 && chk3);
+		if (chk){
+			return true;
+		}
+		chk2 = (col > 1 && row > 1 && board[(int)(row-2)][(int)(col-2)] == 0);
+		chk3 = (board[(int)(row-1)][(int)(col-1)] == 1 || board[(int)(row-1)][(int)(col-1)] == 3);
+		chk = (chk1 && chk2 && chk3);
+		if  (chk){
+			return true;
+		}
+		//Extra King Checks
+		chk1 = (board[row][col] == 4);
+		
+		chk2 = (col < 6 && row < 6 && board[row+2][col+2] == 0);
+		chk3 = (board[row+1][col+1] == 1 || board[row+1][col+1] == 3);
+		chk = (chk1 && chk2 && chk3);
+		if (chk){
+			return true;
+		}
+		chk2 = (col > 1 && row < 6 && board[row+2][col-2] == 0);
+		chk3 = (board[row+1][col-1] == 1 || board[row+1][col-1] == 3);
+		chk = (chk1 && chk2 && chk3);
+		if  (chk){
+			return true;
+		}
+	}
+	return false;
 }
 
 void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int toCol,int jumpRow, int jumpCol){
