@@ -103,6 +103,7 @@ void makeMove(bool blacksTurn) {
 			break;
 		}
 	}
+	getInPosition(currentRow, currentCol);
 }
 
 bool checkWinner(){
@@ -285,8 +286,8 @@ void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int 
 	checkKing(blacksTurn);
 	if (jumpRow != -1){
 		board[jumpRow][jumpCol] = 0;
-		//run move function
-		//run remove captured piece function
+		jump(int currentRow,int currentCol, int toRow, int toCol);
+		removePiece(jumpRow, jumpCol);
 		if(blacksTurn){
 			redCounter += 1;
 		}
@@ -298,7 +299,7 @@ void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int 
 		}
 	}
 	else{
-		//run diagonal moving function
+		step(currentRow, currentCol, toRow, toCol);
 	}
 }
 
