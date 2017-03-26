@@ -1,4 +1,4 @@
-const int ONE_SQUARE = 3 * 25.4 * 2 * PI * 22.1 / 180; // 2.25 inches * 25.4 mm/inch * 2pi*radius /180 = 148, where radius = 22.1mm
+const int ONE_SQUARE = 148; // 2.25 inches * 25.4 mm/inch * 2pi*radius /180 = 148, where radius = 22.1mm
 const int POW = 60;
 int CURRENT_ROW = -1;
 int CURRENT_COL = -1;
