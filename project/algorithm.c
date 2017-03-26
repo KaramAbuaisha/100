@@ -103,7 +103,7 @@ void makeMove(bool blacksTurn) {
 			break;
 		}
 	}
-	getInPosition(currentRow, currentCol);
+	getInPosition(-1, -1, currentRow, currentCol);
 }
 
 bool checkWinner(){
@@ -287,6 +287,7 @@ void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int 
 	if (jumpRow != -1){
 		board[jumpRow][jumpCol] = 0;
 		jump(int currentRow,int currentCol, int toRow, int toCol);
+		(toRow, toCol, jumpRow, jumpCol);
 		removePiece(jumpRow, jumpCol);
 		if(blacksTurn){
 			redCounter += 1;
@@ -418,16 +419,4 @@ void anotherCapture(bool blacksTurn, int currentRow, int currentCol){
 			break;
 		}
 	}
-}
-
-
-task main(){
-	bool blacksTurn = true;
-	
-  newGame();
-
-  while(!checkWinner()){
-  	makeMove(blacksTurn);
-  	blacksTurn = !blacksTurn;
-  }
 }
