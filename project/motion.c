@@ -189,3 +189,19 @@ void removePiece(int jumpRow, int jumpCol){
 		
 	}	
 }
+
+void calibrate() {		// move to -1, -1
+	// motorA is stopped when motorB is stopped by the button
+	motor[motorA] = -POW;
+	motor[motorB] = -POW;
+	Time1[T1] = 0;
+
+	while (Time1[0] < 10000) {		// should not take longer than 10 sec
+		if (SensorValue[S1] == 1) {
+			wait1Msec(100);
+			break;
+		}
+	}
+	motor[motorA] = 0;
+	motor[motorB] = 0;
+}
