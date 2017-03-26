@@ -286,8 +286,8 @@ void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int 
 	checkKing(blacksTurn);
 	if (jumpRow != -1){
 		board[jumpRow][jumpCol] = 0;
-		jump(int currentRow,int currentCol, int toRow, int toCol);
-		(toRow, toCol, jumpRow, jumpCol);
+		jump(currentRow, currentCol, toRow, toCol);
+		getInPosition(toRow, toCol, jumpRow, jumpCol);
 		removePiece(jumpRow, jumpCol);
 		if(blacksTurn){
 			redCounter += 1;
