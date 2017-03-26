@@ -1,48 +1,47 @@
-const int ONE_SQUARE = 3 * 25.4 * 2 * PI * 22.1 / 180; // 3 inches * 25.4 mm/inch * 2pi*radius /180
+const int ONE_SQUARE = 3 * 25.4 * 2 * PI * 22.1 / 180; // 2.25 inches * 25.4 mm/inch * 2pi*radius /180 = 148, where radius = 22.1mm
 const int POW = 60;
 int CURRENT_ROW = -1;
 int CURRENT_COL = -1;
 
-void getInPosition	(int moveRow, int moveCol) {
+void getInPosition(int currentRow, int currentCol, int toRow, int toCol) {
 	nMotorEncoder[motorA] = 0;		// x
 	nMotorEncoder[motorB] = 0;		// y
-	distX = (moveCol - CURRENT_COL) * ONE_SQUARE;
-	distY = (moveROW - CURRENT_ROW) * ONE_SQUARE;
-	if(distX > 0){
+	deltaX = (toCol - currentCol) * ONE_SQUARE;
+	deltaY = (toRow - currentCol) * ONE_SQUARE;
+	if(deltaX > 0){
 	  motor[motorA] = POW;
 	}
 	else{
 	  motor[motorA] = -POW;
 	}
-	if(distY > 0){
+	if(deltaY > 0){
 	  motor[motorB] = POW;
 	}
   else{
     motor[motorB] = -POW;
   }
-	if (CURRENT_ROW == -1){
+	if (currentRow == -1){
 	  while(motor[motorA] != 0 || motor[motorB] != 0){
-	    distX -= ONE_SQUARE;
-	    distY -= ONE_SQUARE;
-	    if(nMotorEncoder[motorA] == distX + 0){ // +0 needs to be determined
+	    deltaX -= ONE_SQUARE;
+	    deltaY -= ONE_SQUARE;
+	    if(nMotorEncoder[motorA] == deltaX + 0){ // +0 needs to be determined
 	      motor[motorA] = 0;
 	    }
-	    if(nMotorEncoder[motorB] == distY + 0){ 
+	    if(nMotorEncoder[motorB] == deltaY + 0){ 
 	      motor[motorB] = 0;
 	    }
 	  }
 	}
 	else{
 	  while(motor[motorA] != 0 || motor[motorB] != 0){
-	    if(nMotorEncoder[motorA] == distX){
+	    if(nMotorEncoder[motorA] == deltaX){
 	      motor[motorA] = 0;
 	    }
-	    if(nMotorEncoder[motorB] == distY){
+	    if(nMotorEncoder[motorB] == deltaY){
 	      motor[motorB] = 0;
 	    }
 	  }
-	}
-
+	}	
 }
 
 /**********  GENERIC MOVEMENT  **********/
@@ -74,6 +73,18 @@ void moveLeft() {			// move one space left
 	motor[motorA] = 0;
 }
 
+void moveDiagonal(int deltaX, int deltaY) {
+  nMotorEncoder[motorA] = 0;
+  nMotorEncoder[motorB] = 0;
+  deltaX *= ONE_SQUARE;
+  deltaY *= ONE_SQUARE;
+  motor[motorA] = POW * sgn(deltaX);
+  motor[motorB] = POW * sgn(deltaY);
+  while (abs(nMotorEncoder[motorA]) < deltaX ||
+         abs(nMotorEncoder[motorB]) < deltaY) {}
+  motor[motorA] = 0;
+  motor[motorB] = 0;
+}
 /**********  MOVE PIECES  **********/
 void moveZ(bool up) {
 	/* Moves the z-axis arm upward or downwards
@@ -126,12 +137,14 @@ void jump(int currentRow, int currentCol, int toRow, int toCol){
     }
   }
   moveZ(false);//magnet down
+	CURRENT_ROW = toRow;
+	CURRENT_ROW = toCol;
 }
 
 void step(int currentRow, int currentCol, int toRow, int toCol) {
 	// steps one space in stated direction in separate dx and dy steps
 	int deltaY = toRow - currrentRow;
-  int deltaX = toCol - currentCol;
+  	int deltaX = toCol - currentCol;
 	moveZ(true);			// magnet up
 	if (deltaY > 0) {
 		moveForward();
@@ -145,12 +158,42 @@ void step(int currentRow, int currentCol, int toRow, int toCol) {
 	else {
 		moveLeft();
 	}
+	CURRENT_ROW = toRow;
+	CURRENT_COL = toCol;
 }
 
 void removePiece(int jumpRow, int jumpCol){
-  void getInPosition (jumpRow, jumpCol);
   moveZ(true);			// magnet up
-  
+	if(jumpCol<4){
+		moveLeft();
+		if(jumpCol != 0){
+			if ((7 - jumpRow) > jumpCol){
+				moveDiagonal(-jumpCol, jumpCol);
+				jumpCol = 0;
+			}
+			else{
+				moveDiagonal(jumpRow-7, 7-jumpRow);
+				jumpCol += jumpRow - 7;
+				moveDiagonal(-jumpCol, -jumpCol);
+			}
+		}
+	}
+	else{
+		moveRight();
+		jumpCol = 7 - jumpCol;
+		if(jumpCol != 0){
+			if ((7 - jumpRow) > jumpCol){
+				moveDiagonal(jumpCol, jumpCol);
+				jumpCol = 0;
+			}
+			else{
+				moveDiagonal(jumpRow-7, 7-jumpRow);
+				jumpCol += jumpRow - 7;
+				moveDiagonal(jumpCol, -jumpCol);
+			}
+		}
+		
+	}	
 }
 /**********  MOVE MAGNET ONLY  **********/
 
