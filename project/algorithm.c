@@ -221,6 +221,7 @@ void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int 
 		jump(currentRow, currentCol, toRow, toCol);
 		getInPosition(toRow, toCol, jumpRow, jumpCol);
 		removePiece(jumpRow, jumpCol);
+		calibrate();
 		if(blacksTurn){
 			redCounter += 1;
 		}
@@ -233,6 +234,7 @@ void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int 
 	}
 	else{
 		step(currentRow, currentCol, toRow, toCol);
+		calibrate();
 	}
 }
 
