@@ -2,17 +2,17 @@ int board [8][8];
 int blackCounter = 0, redCounter = 0;
 
 
-void newGame();
-bool checkWinner();
-void checkKing(bool blacksTurn);
-bool canCapture(bool blacksTurn);
-bool doubleCapture(bool blacksTurn, int row, int col);
-bool legalMove(bool blacksTurn, int currentRow, int currentCol, int toRow, int toCol);
-bool legalMove2(bool blacksTurn, int currentRow, int currentCol, int toRow, int toCol);
-void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int toCol,int jumpRow, int jumpCol);
-void anotherCapture(bool blacksTurn, int currentRow, int currentCol);
-void makeMove(bool blacksTurn);
-void getPos(int lineNum, int &row, int &col);
+void newGame();																										// Richard
+bool checkWinner();																									// Karam
+void checkKing(bool blacksTurn);																					// Karam
+bool canCapture(bool blacksTurn);																					// Richard & Karam
+bool doubleCapture(bool blacksTurn, int row, int col);																// Karam
+bool legalMove(bool blacksTurn, int currentRow, int currentCol, int toRow, int toCol);								// Richard & Karam
+bool legalMove2(bool blacksTurn, int currentRow, int currentCol, int toRow, int toCol);								// Richard & Karam
+void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int toCol,int jumpRow, int jumpCol);	// Richard & Karam
+void anotherCapture(bool blacksTurn, int currentRow, int currentCol);												// Karam
+void makeMove(bool blacksTurn);																						// Jin, Richard, & Karam
+void getPos(int lineNum, int &row, int &col);																		// Jin
 
 
 void newGame(){

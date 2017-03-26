@@ -1,6 +1,17 @@
 const int ONE_SQUARE = 148; // 2.25 inches * 25.4 mm/inch * 2pi*radius /180 = 148, where radius = 22.1mm
 const int POW = 50;
-SensorType[S1] = sensorTouch;
+
+void getInPosition(int currentRow, int currentCol, int toRow, int toCol);	// Karam
+void moveForward();															// Karam
+void moveBackward();														// Karam
+void moveRight();															// Karam
+void moveLeft();															// Karam
+void moveDiagonal(int deltaX, int deltaY);									// Jin
+void moveZ(bool up);														// Jin
+void jump(int currentRow, int currentCol, int toRow, int toCol);			// Karam
+void step(int currentRow, int currentCol, int toRow, int toCol);			// Jin
+void removePiece(int jumpRow, int jumpCol);									// Karam
+void calibrate();															// Jin
 
 void getInPosition(int currentRow, int currentCol, int toRow, int toCol) {
 	nMotorEncoder[motorA] = 0;		// x
@@ -84,6 +95,7 @@ void moveDiagonal(int deltaX, int deltaY) {
   motor[motorA] = 0;
   motor[motorB] = 0;
 }
+
 /**********  MOVE PIECES  **********/
 void moveZ(bool up) {
 	/* Moves the z-axis arm upward or downwards

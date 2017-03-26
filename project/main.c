@@ -4,6 +4,7 @@ int board[8][8];
 int blackCounter = 0, whiteCounter = 0;
 
 task main() {
+	sensorType[S1] = sensorTouch;
 	sensorType[S2] = sensorSonar;
 	displayString(0, "GROUP 100");
 	displayString(1, "AUTOCHECKERS");
