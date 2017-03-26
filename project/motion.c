@@ -1,95 +1,89 @@
-const float SCALE = 3 * 25.4;		// 3 in/square to millimetres
-const float WHEEL_RADIUS = 22.5;		// mm
-const float CONVERT = PI / 180 * WHEEL_RADIUS;
-const short MAX_M_POW = 80;
-const short START_POW = 10;
+const int ONE_SQUARE = 148; // 2.25 inches * 25.4 mm/inch * 2pi*radius /180 = 148, where radius = 22.1mm
+const int POW = 60;
 
-float angToDist(float angle) {
-	return angle * CONVERT;
-}
-
-float distToAng(float distance) {
-	return distance / CONVERT;
-}
-
-void move(short starti, short startj, short fini, short finj) {
+void getInPosition(int currentRow, int currentCol, int toRow, int toCol) {
 	nMotorEncoder[motorA] = 0;		// x
 	nMotorEncoder[motorB] = 0;		// y
-	float deltaX = distToAng((finj - startj) * SCALE);
-	float deltaY = distToAng((fini - starti) * SCALE);
-	float midX = deltaX/2, midY = deltaY/2;
-	short xPow, yPow;
-	if (deltaX < deltaY) {
-		yPow = MAX_M_POW;
-		xPow = MAX_M_POW * deltaX/deltaY;
+	int deltaX = (toCol - currentCol) * ONE_SQUARE;
+	int deltaY = (toRow - currentCol) * ONE_SQUARE;
+	if(deltaX > 0){
+	  motor[motorA] = POW;
 	}
-	else {
-		xPow = MAX_M_POW;
-		yPow = MAX_M_POW * deltaY/deltaX;
+	else{
+	  motor[motorA] = -POW;
 	}
-	if (deltaX < 0) {
-		xPow = -xPow;
+	if(deltaY > 0){
+	  motor[motorB] = POW;
 	}
-	if (deltaY < 0) {
-		yPow = -yPow;
+  else{
+    motor[motorB] = -POW;
+  }
+	if (currentRow == -1){
+	  while(motor[motorA] != 0 || motor[motorB] != 0){
+	    deltaX -= ONE_SQUARE;
+	    deltaY -= ONE_SQUARE;
+	    if(nMotorEncoder[motorA] == deltaX + 0){ // +0 needs to be determined
+	      motor[motorA] = 0;
+	    }
+	    if(nMotorEncoder[motorB] == deltaY + 0){ 
+	      motor[motorB] = 0;
+	    }
+	  }
 	}
-	do {
-		displayString(0, "dX = %d", angToDist(nMotorEncoder[motorA])/SCALE);
-		displayString(1, "dY = %d", angToDist(nMotorEncoder[motorB])/SCALE);
-		displayString(2, "dTot = %d", angToDist(nMotorEncoder[motorA] + nMotorEncoder[motorB])/SCALE);
-		// increase power linearly to midpoint, then
-		// decrease it linearly to finish.
-		if (deltaX != 0) {
-			motor[motorA] = (-abs(nMotorEncoder[motorA] - midX)/midX + 1) * (xPow - START_POW) + START_POW;
-		}
-		if (deltaY != 0) {
-			motor[motorB] = (-abs(nMotorEncoder[motorB] - midY)/midY + 1) * (yPow - START_POW) + START_POW;
-		}
-	} while (motor[motorA] > 0 || motor[motorB] > 0);
-	motor[motorA] = 0;
-	motor[motorB] = 0;
-	return;
+	else{
+	  while(motor[motorA] != 0 || motor[motorB] != 0){
+	    if(nMotorEncoder[motorA] == deltaX){
+	      motor[motorA] = 0;
+	    }
+	    if(nMotorEncoder[motorB] == deltaY){
+	      motor[motorB] = 0;
+	    }
+	  }
+	}	
 }
 
-void moveSin(short starti, short startj, short fini, short finj) {
-	nMotorEncoder[motorA] = 0;		// x
-	nMotorEncoder[motorB] = 0;		// y
-	float deltaX = distToAng((finj - startj) * SCALE);
-	float deltaY = distToAng((fini - starti) * SCALE);
-	float midX = deltaX/2, midY = deltaY/2;
-	short xPow, yPow;
-	if (deltaX < deltaY) {
-		yPow = MAX_M_POW;
-		xPow = MAX_M_POW * deltaX/deltaY;
-	}
-	else {
-		xPow = MAX_M_POW;
-		yPow = MAX_M_POW * deltaY/deltaX;
-	}
-	if (deltaX < 0) {
-		xPow = -xPow;
-	}
-	if (deltaY < 0) {
-		yPow = -yPow;
-	}
-	do {
-		displayString(0, "dX = %d", angToDist(nMotorEncoder[motorA])/SCALE);
-		displayString(1, "dY = %d", angToDist(nMotorEncoder[motorB])/SCALE);
-		displayString(2, "dTot = %d", angToDist(nMotorEncoder[motorA] + nMotorEncoder[motorB])/SCALE);
-		// increase power linearly to midpoint, then
-		// decrease it linearly to finish.
-		if (deltaX != 0) {
-			motor[motorA] = (-abs(nMotorEncoder[motorA] - midX)/midX + 1) * (xPow - START_POW) + START_POW;
-		}
-		if (deltaY != 0) {
-			motor[motorB] = (-abs(nMotorEncoder[motorB] - midY)/midY + 1) * (yPow - START_POW) + START_POW;
-		}
-	} while (motor[motorA] > 0 || motor[motorB] > 0);
-	motor[motorA] = 0;
+/**********  GENERIC MOVEMENT  **********/
+void moveForward() {		// move one space forward
+	nMotorEncoder[motorB] = 0;
+	motor[motorB] = POW;
+	while (nMotorEncoder[motorB] < ONE_SQUARE) {}
 	motor[motorB] = 0;
-	return;
 }
 
+void moveBackward() {			// move one space backward
+	nMotorEncoder[motorB] = 0;
+	motor[motorB] = -POW;
+	while (nMotorEncoder[motorB] > ONE_SQUARE) {}
+	motor[motorB] = 0;
+}
+
+void moveRight() {		// move ones space right
+	nMotorEncoder[motorA] = 0;
+	motor[motorA] = POW;
+	while (nMotorEncoder[motorA] < ONE_SQUARE) {}
+	motor[motorA] = 0;
+}
+
+void moveLeft() {			// move one space left
+	nMotorEncoder[motorA] = 0;
+	motor[motorA] = -POW;
+	while (nMotorEncoder[motorA] > ONE_SQUARE) {}
+	motor[motorA] = 0;
+}
+
+void moveDiagonal(int deltaX, int deltaY) {
+  nMotorEncoder[motorA] = 0;
+  nMotorEncoder[motorB] = 0;
+  deltaX *= ONE_SQUARE;
+  deltaY *= ONE_SQUARE;
+  motor[motorA] = POW * sgn(deltaX);
+  motor[motorB] = POW * sgn(deltaY);
+  while (abs(nMotorEncoder[motorA]) < deltaX ||
+         abs(nMotorEncoder[motorB]) < deltaY) {}
+  motor[motorA] = 0;
+  motor[motorB] = 0;
+}
+/**********  MOVE PIECES  **********/
 void moveZ(bool up) {
 	/* Moves the z-axis arm upward or downwards
 	   until it encounters resistance. */
@@ -107,44 +101,16 @@ void moveZ(bool up) {
 	}
 	motor[motorC] = 0;
 }
-void magnetUp(){
-  
-}
-
-void magnetDown(){
-  
-}
-
-void moveForward(){
-  
-}
-
-void moveBackward(){
-  
-}
-
-void moveLeft(){
-  
-}
-
-void moveRight(){
-  
-}
-
-void moveDiagonal(int x, int y){
-
-}
 
 //if jump code
-void getinPosition(short )
 
 void jump(int currentRow, int currentCol, int toRow, int toCol){
-  
-  deltaY = toRow - currrentRow;
-  deltaX = toCol - currentCol;
-  
+
+  int deltaY = toRow - currentRow;
+  int deltaX = toCol - currentCol;
+
   moveZ(true);//magnet up
-  
+
   if (deltaY > 0){
     moveForward();
     if (deltaX > 0){
@@ -155,8 +121,8 @@ void jump(int currentRow, int currentCol, int toRow, int toCol){
       moveDiagonal(-1, 1);
       moveLeft();
     }
-  } 
-  
+  }
+
   else{ //deltaY < 0
     moveBackward();
     if (deltaX > 0){
@@ -169,4 +135,57 @@ void jump(int currentRow, int currentCol, int toRow, int toCol){
     }
   }
   moveZ(false);//magnet down
+}
+
+void step(int currentRow, int currentCol, int toRow, int toCol) {
+	// steps one space in stated direction in separate dx and dy steps
+	int deltaY = toRow - currentRow;
+  	int deltaX = toCol - currentCol;
+	moveZ(true);			// magnet up
+	if (deltaY > 0) {
+		moveForward();
+	}
+	else {
+		moveBackward();
+	}
+	if (deltaX > 0) {
+		moveRight();
+	}
+	else {
+		moveLeft();
+	}
+}
+
+void removePiece(int jumpRow, int jumpCol){
+  moveZ(true);			// magnet up
+	if(jumpCol<4){
+		moveLeft();
+		if(jumpCol != 0){
+			if ((7 - jumpRow) > jumpCol){
+				moveDiagonal(-jumpCol, jumpCol);
+				jumpCol = 0;
+			}
+			else{
+				moveDiagonal(jumpRow-7, 7-jumpRow);
+				jumpCol += jumpRow - 7;
+				moveDiagonal(-jumpCol, -jumpCol);
+			}
+		}
+	}
+	else{
+		moveRight();
+		jumpCol = 7 - jumpCol;
+		if(jumpCol != 0){
+			if ((7 - jumpRow) > jumpCol){
+				moveDiagonal(jumpCol, jumpCol);
+				jumpCol = 0;
+			}
+			else{
+				moveDiagonal(jumpRow-7, 7-jumpRow);
+				jumpCol += jumpRow - 7;
+				moveDiagonal(jumpCol, -jumpCol);
+			}
+		}
+		
+	}	
 }
