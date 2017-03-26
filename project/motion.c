@@ -1,5 +1,6 @@
 const int ONE_SQUARE = 148; // 2.25 inches * 25.4 mm/inch * 2pi*radius /180 = 148, where radius = 22.1mm
-const int POW = 60;
+const int POW = 50;
+SensorType[S1] = sensorTouch;
 
 void getInPosition(int currentRow, int currentCol, int toRow, int toCol) {
 	nMotorEncoder[motorA] = 0;		// x
@@ -15,9 +16,9 @@ void getInPosition(int currentRow, int currentCol, int toRow, int toCol) {
 	if(deltaY > 0){
 	  motor[motorB] = POW;
 	}
-  else{
-    motor[motorB] = -POW;
-  }
+  	else{
+    	motor[motorB] = -POW;
+  	}
 	if (currentRow == -1){
 	  while(motor[motorA] != 0 || motor[motorB] != 0){
 	    deltaX -= ONE_SQUARE;
@@ -194,7 +195,7 @@ void calibrate() {		// move to -1, -1
 	// motorA is stopped when motorB is stopped by the button
 	motor[motorA] = -POW;
 	motor[motorB] = -POW;
-	Time1[T1] = 0;
+	Time1[T2] = 0;
 
 	while (Time1[0] < 10000) {		// should not take longer than 10 sec
 		if (SensorValue[S1] == 1) {
