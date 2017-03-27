@@ -207,9 +207,9 @@ void calibrate() {		// move to -1, -1
 	// motorA is stopped when motorB is stopped by the button
 	motor[motorA] = -POW;
 	motor[motorB] = -POW;
-	Time1[T2] = 0;
+	time1[T2] = 0;
 
-	while (Time1[0] < 10000) {		// should not take longer than 10 sec
+	while (time1[T2] < 10000) {		// should not take longer than 10 sec
 		if (SensorValue[S1] == 1) {
 			wait1Msec(100);
 			break;

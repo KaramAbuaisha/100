@@ -56,6 +56,8 @@ void getPos(int lineNum, int &row, int &col) {
 	char cols[8] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
 	row = 3; col = 3;
 
+	while (nNxtButtonPressed != -1) {}
+
 	// select row
 	while (nNxtButtonPressed != 3) {
 		displayString(lineNum, "SELECT ROW: %d", row + 1);
@@ -66,8 +68,10 @@ void getPos(int lineNum, int &row, int &col) {
 		else if (nNxtButtonPressed == 2 && row > 0) { // decrease, 2 is left arrow
 			--(row);
 		}
-		wait1Msec(200);
+		wait1Msec(300);
 	}
+
+	while (nNxtButtonPressed != -1) {}
 
 	// select column
 	while (nNxtButtonPressed != 3) {
@@ -79,7 +83,7 @@ void getPos(int lineNum, int &row, int &col) {
 		else if (nNxtButtonPressed == 2 && col > 0) {
 			--(col);
 		}
-		wait1Msec(100);
+		wait1Msec(300);
 	}
 }
 
@@ -93,10 +97,10 @@ void makeMove(bool blacksTurn) {
 		}
 		displayString(0, "MOVE THIS PIECE");
 		getPos(1, currentRow, currentCol);
-		displayString(2, "TO WHERE?");
-		getPos(3, toRow, toCol);
+		displayString(3, "TO WHERE?");
+		getPos(4, toRow, toCol);
 		if (!legalMove(blacksTurn, currentRow, currentCol, toRow, toCol)) {
-			displayString(5, "ILLEGAL MOVE");
+			displayString(6, "ILLEGAL MOVE");
 			wait1Msec(1000);
 			eraseDisplay();
 		}
@@ -104,7 +108,6 @@ void makeMove(bool blacksTurn) {
 			break;
 		}
 	}
-	getInPosition(-1, -1, currentRow, currentCol);
 }
 
 bool checkWinner(){
@@ -216,6 +219,8 @@ void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int 
 	board[toRow][toCol] = board[currentRow][currentCol];
 	board[currentRow][currentCol] = 0;
 	checkKing(blacksTurn);
+	getInPosition(-1, -1, currentRow, currentCol);
+
 	if (jumpRow != -1){
 		board[jumpRow][jumpCol] = 0;
 		jump(currentRow, currentCol, toRow, toCol);
