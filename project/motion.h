@@ -37,7 +37,7 @@ void getInPosition(int currentRow, int currentCol, int toRow, int toCol) {
 	    if(nMotorEncoder[motorA] == deltaX + 0){ // +0 needs to be determined
 	      motor[motorA] = 0;
 	    }
-	    if(nMotorEncoder[motorB] == deltaY + 0){ 
+	    if(nMotorEncoder[motorB] == deltaY + 0){
 	      motor[motorB] = 0;
 	    }
 	  }
@@ -51,7 +51,7 @@ void getInPosition(int currentRow, int currentCol, int toRow, int toCol) {
 	      motor[motorB] = 0;
 	    }
 	  }
-	}	
+	}
 }
 
 /**********  GENERIC MOVEMENT  **********/
@@ -199,8 +199,8 @@ void removePiece(int jumpRow, int jumpCol){
 				moveDiagonal(jumpCol, -jumpCol);
 			}
 		}
-		
-	}	
+
+	}
 }
 
 void calibrate() {		// move to -1, -1

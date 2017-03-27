@@ -1,7 +1,5 @@
-#include <algorithm.c>
-#include <motion.c>
-int board[8][8];
-int blackCounter = 0, whiteCounter = 0;
+#include "motion.h"
+#include "algorithm.h"
 
 task main() {
 	SensorType[S1] = sensorTouch;
