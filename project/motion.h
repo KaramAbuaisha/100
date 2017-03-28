@@ -198,7 +198,7 @@ void calibrate() {		// move to -1, -1
 	time1[T2] = 0;
 
 	while (time1[T2] < 10000) {		// should not take longer than 10 sec
-		if (SensorValue[S1] == 1) {
+		if (SensorValue[4] == 1) {
 			wait1Msec(100);
 			break;
 		}
