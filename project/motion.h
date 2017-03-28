@@ -1,5 +1,5 @@
 const int ONE_SQUARE = 136; // 2.25 inches * 25.4 mm/inch * 2pi*radius /180 = 148, where radius = 22.1mm
-const int POW = 50;
+const int POW = 30;
 const bool DEBUG = true;
 
 void getInPosition(int currentRow, int currentCol, int toRow, int toCol);	// Karam
