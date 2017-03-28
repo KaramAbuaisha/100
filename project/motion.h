@@ -23,7 +23,6 @@ void getInPosition(int currentRow, int currentCol, int toRow, int toCol) {
 		deltaY -= 1;
 	}*/
 	moveDiagonal(deltaX, deltaY);
-	eraseDisplay();
 }
 
 /**********  GENERIC MOVEMENT  **********/
