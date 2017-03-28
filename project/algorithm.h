@@ -216,7 +216,7 @@ void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int 
 	board[toRow][toCol] = board[currentRow][currentCol];
 	board[currentRow][currentCol] = 0;
 	checkKing(blacksTurn);
-	getInPosition(-1, -1, currentRow, currentCol);
+	getInPosition(0, 0, currentRow, currentCol);
 
 	if (jumpRow != -1){
 		board[jumpRow][jumpCol] = 0;
