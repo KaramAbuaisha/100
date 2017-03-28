@@ -16,6 +16,7 @@ task main() {
 	while (SensorValue[S2] > 10) {} //this value needs to be tested
 	eraseDisplay();
 	calibrate();
+
 	// GAME
 	bool blacksTurn = true;
 	newGame();

@@ -20,10 +20,10 @@ void getInPosition(int currentRow, int currentCol, int toRow, int toCol) {
 	nMotorEncoder[motorB] = 0;		// y
 	int deltaX = (toCol - currentCol);
 	int deltaY = (toRow - currentCol);
-	if (currentRow == -1){
+	/*if (currentRow == -1){
 		deltaX -= 1;
 		deltaY -= 1;
-	}
+	}*/
 	displayString(0, "x = %d", deltaX);
 	displayString(1, "y = %d", deltaY);
 	moveDiagonal(deltaX, deltaY);
@@ -43,32 +43,33 @@ void moveBackward() {			// move one space backward
 	if (DEBUG) displayString(6, "moveBackward()");
 	nMotorEncoder[motorB] = 0;
 	motor[motorB] = -POW;
-	while (nMotorEncoder[motorB] > ONE_SQUARE) {}
+	while (-nMotorEncoder[motorB] < ONE_SQUARE) {}
 	motor[motorB] = 0;
 }
 
 void moveRight() {		// move ones space right
 	if (DEBUG) displayString(6, "moveRight()");
 	nMotorEncoder[motorA] = 0;
-	motor[motorA] = POW;
-	while (nMotorEncoder[motorA] < ONE_SQUARE) {}
+	motor[motorA] = -POW;
+	while (-nMotorEncoder[motorA] < ONE_SQUARE) {}
 	motor[motorA] = 0;
 }
 
 void moveLeft() {			// move one space left
 	if (DEBUG) displayString(6, "moveLeft()");
 	nMotorEncoder[motorA] = 0;
-	motor[motorA] = -POW;
-	while (nMotorEncoder[motorA] > ONE_SQUARE) {}
+	motor[motorA] = POW;
+	while (nMotorEncoder[motorA] < ONE_SQUARE) {}
 	motor[motorA] = 0;
 }
 
 void moveDiagonal(int deltaX, int deltaY) {
+		// assumes that |deltaX| == |deltaY|
   	if (DEBUG) displayString(6, "moveDiagonal()");
   	nMotorEncoder[motorA] = 0;
- 	nMotorEncoder[motorB] = 0;
-  	deltaX *= ONE_SQUARE;
-	deltaY *= ONE_SQUARE;
+ 		nMotorEncoder[motorB] = 0;
+  	deltaX *= -ONE_SQUARE;
+		deltaY *= ONE_SQUARE;
   	motor[motorA] = POW * sgn(deltaX);
   	motor[motorB] = POW * sgn(deltaY);
   	while (abs(nMotorEncoder[motorA]) < deltaX ||
@@ -85,10 +86,10 @@ void moveZ(bool up) {
 	nMotorEncoder[motorC] = 0;
 	int prev = -10;
 	if (up) {
-		motor[motorC] = -10;
+		motor[motorC] = -20;
 	}
 	else {
-		motor[motorC] = 10;
+		motor[motorC] = 20;
 	}
 	while (!(abs(nMotorEncoder[motorC] - prev) < 0.1)) {
 		prev = nMotorEncoder[motorC];
@@ -108,7 +109,7 @@ void jump(int currentRow, int currentCol, int toRow, int toCol){
 
   	if (deltaY > 0){
     		moveForward();
-	
+
     		if (deltaX > 0){
       			moveDiagonal(1, 1);
       			moveRight();
@@ -198,7 +199,7 @@ void calibrate() {		// move to -1, -1
 	time1[T2] = 0;
 
 	while (time1[T2] < 10000) {		// should not take longer than 10 sec
-		if (SensorValue[4] == 1) {
+		if (SensorValue[S4] == 1) {
 			wait1Msec(100);
 			break;
 		}

@@ -71,7 +71,8 @@ void getPos(int lineNum, int &row, int &col) {
 		else if (nNxtButtonPressed == 2 && row > 0) { // decrease, 2 is left arrow
 			--(row);
 		}
-		while (nNxtButtonPressed != -1) {}
+		//while (nNxtButtonPressed != -1) {}
+		wait1Msec(500);
 	}
 
 	while (nNxtButtonPressed != -1) {}
@@ -86,7 +87,8 @@ void getPos(int lineNum, int &row, int &col) {
 		else if (nNxtButtonPressed == 2 && col > 0) {
 			--(col);
 		}
-		while (nNxtButtonPressed != -1) {}
+		//while (nNxtButtonPressed != -1) {}
+		wait1Msec(500);
 	}
 }
 

@@ -4,10 +4,10 @@ void moveZ(bool up) {
 	nMotorEncoder[motorC] = 0;
 	int prev = -10;
 	if (up) {
-		motor[motorC] = -10;
+		motor[motorC] = -30;
 	}
 	else {
-		motor[motorC] = 10;
+		motor[motorC] = 30;
 	}
 	while (true) {
 		if (abs(nMotorEncoder[motorC] - prev) < 0.1) {
