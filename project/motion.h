@@ -21,6 +21,7 @@ void getInPosition(int currentRow, int currentCol, int toRow, int toCol) {
 	if (DEBUG){
 		displayString(3, "deltaX = %d, deltaX);
 		displayString(4, "deltaY = %d, deltaY);
+		wait1Msec(2000);
 	}
 	moveDiagonal(deltaX, deltaY);
 }
