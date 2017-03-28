@@ -65,13 +65,17 @@ void moveDiagonal(int deltaX, int deltaY) {
   	nMotorEncoder[motorA] = 0;
  	nMotorEncoder[motorB] = 0;
   	deltaX *= -ONE_SQUARE;
-		deltaY *= ONE_SQUARE;
+	deltaY *= ONE_SQUARE;
   	motor[motorA] = POW * sgn(deltaX);
   	motor[motorB] = POW * sgn(deltaY);
-  	while (abs(nMotorEncoder[motorA]) < deltaX ||
-         	abs(nMotorEncoder[motorB]) < deltaY) {}
-  	motor[motorA] = 0;
-  	motor[motorB] = 0;
+  	while(motor[motorA] != 0 || motor[motorB] != 0){
+		if((abs(nMotorEncoder[motorA]) < deltaX){
+  			motor[motorA] = 0;
+		}
+		if((abs(nMotorEncoder[motorB]) < deltaY){
+  			motor[motorB] = 0;
+		}
+	}
 }
 
 /**********  MOVE PIECES  **********/
