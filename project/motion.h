@@ -1,4 +1,4 @@
-const int ONE_SQUARE = 148; // 2.25 inches * 25.4 mm/inch * 2pi*radius /180 = 148, where radius = 22.1mm
+const int ONE_SQUARE = 136; // 2.25 inches * 25.4 mm/inch * 2pi*radius /180 = 148, where radius = 22.1mm
 const int POW = 50;
 const bool DEBUG = true;
 
@@ -16,16 +16,12 @@ void calibrate();															// Jin
 
 void getInPosition(int currentRow, int currentCol, int toRow, int toCol) {
 	if (DEBUG) displayString(6, "getInPosition()");
-	nMotorEncoder[motorA] = 0;		// x
-	nMotorEncoder[motorB] = 0;		// y
 	int deltaX = (toCol - currentCol);
-	int deltaY = (toRow - currentCol);
+	int deltaY = (toRow - currentRow);
 	/*if (currentRow == -1){
 		deltaX -= 1;
 		deltaY -= 1;
 	}*/
-	displayString(0, "x = %d", deltaX);
-	displayString(1, "y = %d", deltaY);
 	moveDiagonal(deltaX, deltaY);
 	eraseDisplay();
 }
@@ -66,8 +62,9 @@ void moveLeft() {			// move one space left
 void moveDiagonal(int deltaX, int deltaY) {
 		// assumes that |deltaX| == |deltaY|
   	if (DEBUG) displayString(6, "moveDiagonal()");
+	
   	nMotorEncoder[motorA] = 0;
- 		nMotorEncoder[motorB] = 0;
+ 	nMotorEncoder[motorB] = 0;
   	deltaX *= -ONE_SQUARE;
 		deltaY *= ONE_SQUARE;
   	motor[motorA] = POW * sgn(deltaX);
@@ -157,37 +154,18 @@ void step(int currentRow, int currentCol, int toRow, int toCol) {
 
 void removePiece(int jumpRow, int jumpCol){
 	if (DEBUG) displayString(6, "removePiece()");
-  	moveZ(true);			// magnet up
-	if(jumpCol<4){
-		moveLeft();
-		if(jumpCol != 0){
-			if ((7 - jumpRow) > jumpCol){
-				moveDiagonal(-jumpCol, jumpCol);
-				jumpCol = 0;
-			}
-			else{
-				moveDiagonal(jumpRow-7, 7-jumpRow);
-				jumpCol += jumpRow - 7;
-				moveDiagonal(-jumpCol, -jumpCol);
-			}
-		}
+  	moveZ(true);	// magnet up
+	moveRight();
+	if ((7 - jumpRow) > jumpCol){
+		moveDiagonal(-jumpCol, jumpCol);
+		jumpCol = 0;
 	}
 	else{
-		moveRight();
-		jumpCol = 7 - jumpCol;
-		if(jumpCol != 0){
-			if ((7 - jumpRow) > jumpCol){
-				moveDiagonal(jumpCol, jumpCol);
-				jumpCol = 0;
-			}
-			else{
-				moveDiagonal(jumpRow-7, 7-jumpRow);
-				jumpCol += jumpRow - 7;
-				moveDiagonal(jumpCol, -jumpCol);
-			}
-		}
-
+		moveDiagonal(jumpRow-7, 7-jumpRow);
+		jumpCol += jumpRow - 7;
+		moveDiagonal(-jumpCol, -jumpCol);
 	}
+
 	moveZ(false);
 }
 
