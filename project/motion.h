@@ -16,42 +16,15 @@ void calibrate();															// Jin
 void getInPosition(int currentRow, int currentCol, int toRow, int toCol) {
 	nMotorEncoder[motorA] = 0;		// x
 	nMotorEncoder[motorB] = 0;		// y
-	int deltaX = (toCol - currentCol) * ONE_SQUARE;
-	int deltaY = (toRow - currentCol) * ONE_SQUARE;
-	if(deltaX > 0){
-	  motor[motorA] = POW;
-	}
-	else{
-	  motor[motorA] = -POW;
-	}
-	if(deltaY > 0){
-	  motor[motorB] = POW;
-	}
-  	else{
-    	motor[motorB] = -POW;
-  	}
+	int deltaX = (toCol - currentCol);
+	int deltaY = (toRow - currentCol);
 	if (currentRow == -1){
-	  while(motor[motorA] != 0 || motor[motorB] != 0){
-	    deltaX -= ONE_SQUARE;
-	    deltaY -= ONE_SQUARE;
-	    if(nMotorEncoder[motorA] == deltaX + 0){ // +0 needs to be determined
-	      motor[motorA] = 0;
-	    }
-	    if(nMotorEncoder[motorB] == deltaY + 0){
-	      motor[motorB] = 0;
-	    }
-	  }
+		deltaX -= 1;
+		deltaY -= 1;
 	}
-	else{
-	  while(motor[motorA] != 0 || motor[motorB] != 0){
-	    if(nMotorEncoder[motorA] == deltaX){
-	      motor[motorA] = 0;
-	    }
-	    if(nMotorEncoder[motorB] == deltaY){
-	      motor[motorB] = 0;
-	    }
-	  }
-	}
+	displayString(0, "x = %d", deltaX);
+	displayString(1, "y = %d", deltaY);
+	moveDiagonal(deltaX, deltaY);
 }
 
 /**********  GENERIC MOVEMENT  **********/
