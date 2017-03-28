@@ -2,7 +2,7 @@
 #include "algorithm.h"
 
 task main() {
-	SensorType[S1] = sensorTouch;
+	SensorType[S4] = sensorTouch;
 	SensorType[S2] = sensorSONAR;
 	displayString(0, "GROUP 100");
 	displayString(1, "AUTOCHECKERS");
