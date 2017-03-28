@@ -194,7 +194,7 @@ void removePiece(int jumpRow, int jumpCol){
 void calibrate() {		// move to -1, -1
 	// motorA is stopped when motorB is stopped by the button
 	if (DEBUG) displayString(6, "calibrate()");
-	motor[motorA] = -POW;
+	motor[motorA] = POW;
 	motor[motorB] = -POW;
 	time1[T2] = 0;
 
