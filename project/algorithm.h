@@ -1,6 +1,6 @@
 int blackCounter = 0, redCounter = 0;
 int board[8][8];
-bool debug = true;
+const bool DEBUG = true;
 
 
 void newGame();																										// Richard
@@ -18,7 +18,7 @@ void getPos(int lineNum, int &row, int &col);																		// Jin
 
 void newGame(){
 	//I is row, J is col
-	if (debug) displayString(6, "newGame()");
+	if (DEBUG) displayString(6, "newGame()");
 	for (int i = 0; i < 8;i++){
 		for (int j = 0; j < 8; j++){
 			//Setting default pieces
@@ -55,7 +55,7 @@ void newGame(){
 
 //User input
 void getPos(int lineNum, int &row, int &col) {
-	if (debug) displayString(6, "getPos()");
+	if (DEBUG) displayString(6, "getPos()");
 	char cols[8] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
 	row = 3; col = 3;
 
@@ -91,7 +91,7 @@ void getPos(int lineNum, int &row, int &col) {
 }
 
 void checkKing(bool blacksTurn){
-	if (debug) displayString(6, "checkKing()");
+	if (DEBUG) displayString(6, "checkKing()");
 	if(blacksTurn){
 		for(int j = 1; j<8; j += 2){
 			if(board[7][j] == 1){
@@ -110,7 +110,7 @@ void checkKing(bool blacksTurn){
 
 
 bool doubleCapture(bool blacksTurn, int row, int col){
-	if (debug) displayString(6, "doubleCapture()");
+	if (DEBUG) displayString(6, "doubleCapture()");
 	if (blacksTurn){
 	    //Black Piece Cases
 	    if ( (board[row][col] == 1 || board[row][col] == 3) && col < 6 && row < 6 &&  ((board[(int) (row+1)][(int) (col+1)] == 2 || board[(int) (row+1)][(int) (col+1)] == 4) && (board[(int) (row+2)][(int) (col+2)] == 0))){
@@ -148,7 +148,7 @@ bool doubleCapture(bool blacksTurn, int row, int col){
 }
 
 bool legalMove2(bool blacksTurn, int currentRow, int currentCol, int toRow, int toCol){
-	if (debug) displayString(6, "legalMove2()");
+	if (DEBUG) displayString(6, "legalMove2()");
 	//Legal move conditions for second capture, jumps only
 
 	int jumpRow = -1, jumpCol = -1;
@@ -192,7 +192,7 @@ bool legalMove2(bool blacksTurn, int currentRow, int currentCol, int toRow, int 
 
 //Checks if a move is legal, returns a boolean, called by the makeMove
 void anotherCapture(bool blacksTurn, int currentRow, int currentCol){
-	if (debug) displayString(6, "anotherCapture()");
+	if (DEBUG) displayString(6, "anotherCapture()");
 	int toRow = -1, toCol = -1;
 
 	while(true){
@@ -210,7 +210,7 @@ void anotherCapture(bool blacksTurn, int currentRow, int currentCol){
 }
 
 void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int toCol,int jumpRow, int jumpCol){
-	if (debug) displayString(6, "updateBoard()");
+	if (DEBUG) displayString(6, "updateBoard()");
 	board[toRow][toCol] = board[currentRow][currentCol];
 	board[currentRow][currentCol] = 0;
 	checkKing(blacksTurn);
@@ -240,7 +240,7 @@ void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int 
 
 
 bool canCapture(bool blacksTurn){
-	if (debug) displayString(6, "canCapture()");
+	if (DEBUG) displayString(6, "canCapture()");
 	for (int i = 0; i < 8; i++){ //iterating through rows
 	    for (int j = 0; j < 8; j++){ //iterating through columns
 
@@ -283,7 +283,7 @@ bool canCapture(bool blacksTurn){
 }
 
 bool legalMove(bool blacksTurn, int currentRow, int currentCol, int toRow, int toCol){
-	if (debug) displayString(6, "legalMove()");
+	if (DEBUG) displayString(6, "legalMove()");
 	//Legal move conditions, 1 diagonal, jump over piece, jump over multiple pieces - will be hard to implement
 
 	int jumpRow = -1, jumpCol = -1;
@@ -342,7 +342,7 @@ bool legalMove(bool blacksTurn, int currentRow, int currentCol, int toRow, int t
 
 
 void makeMove(bool blacksTurn) {
-	if (debug) displayString(6, "makeMove()");
+	if (DEBUG) displayString(6, "makeMove()");
 	int currentRow = -1, currentCol = -1, toRow = -1, toCol = -1;
 
 	while (true) {
@@ -365,7 +365,7 @@ void makeMove(bool blacksTurn) {
 }
 
 bool checkWinner(){
-	if (debug) displayString(6, "checkWinner()");
+	if (DEBUG) displayString(6, "checkWinner()");
 	if(redCounter == 12 || blackCounter == 12){
 		return true;
 	}

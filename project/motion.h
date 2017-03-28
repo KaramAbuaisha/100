@@ -1,5 +1,6 @@
 const int ONE_SQUARE = 148; // 2.25 inches * 25.4 mm/inch * 2pi*radius /180 = 148, where radius = 22.1mm
 const int POW = 50;
+const bool DEBUG = true;
 
 void getInPosition(int currentRow, int currentCol, int toRow, int toCol);	// Karam
 void moveForward();															// Karam
@@ -14,7 +15,7 @@ void removePiece(int jumpRow, int jumpCol);									// Karam
 void calibrate();															// Jin
 
 void getInPosition(int currentRow, int currentCol, int toRow, int toCol) {
-	displayString(6, "getInPosition");
+	if (DEBUG) displayString(6, "getInPosition()");
 	nMotorEncoder[motorA] = 0;		// x
 	nMotorEncoder[motorB] = 0;		// y
 	int deltaX = (toCol - currentCol);
@@ -31,7 +32,7 @@ void getInPosition(int currentRow, int currentCol, int toRow, int toCol) {
 
 /**********  GENERIC MOVEMENT  **********/
 void moveForward() {	// move one space forward
-	displayString(6, "moveForward");
+	if (DEBUG) displayString(6, "moveForward()");
 	nMotorEncoder[motorB] = 0;
 	motor[motorB] = POW;
 	while (nMotorEncoder[motorB] < ONE_SQUARE) {}
@@ -39,7 +40,7 @@ void moveForward() {	// move one space forward
 }
 
 void moveBackward() {			// move one space backward
-	displayString(6, "moveBackward");
+	if (DEBUG) displayString(6, "moveBackward()");
 	nMotorEncoder[motorB] = 0;
 	motor[motorB] = -POW;
 	while (nMotorEncoder[motorB] > ONE_SQUARE) {}
@@ -47,7 +48,7 @@ void moveBackward() {			// move one space backward
 }
 
 void moveRight() {		// move ones space right
-	displayString(6, "moveRight");
+	if (DEBUG) displayString(6, "moveRight()");
 	nMotorEncoder[motorA] = 0;
 	motor[motorA] = POW;
 	while (nMotorEncoder[motorA] < ONE_SQUARE) {}
@@ -55,7 +56,7 @@ void moveRight() {		// move ones space right
 }
 
 void moveLeft() {			// move one space left
-	displayString(6, "moveLeft");
+	if (DEBUG) displayString(6, "moveLeft()");
 	nMotorEncoder[motorA] = 0;
 	motor[motorA] = -POW;
 	while (nMotorEncoder[motorA] > ONE_SQUARE) {}
@@ -63,7 +64,7 @@ void moveLeft() {			// move one space left
 }
 
 void moveDiagonal(int deltaX, int deltaY) {
-  	displayString(6, "moveDiagonal");
+  	if (DEBUG) displayString(6, "moveDiagonal()");
   	nMotorEncoder[motorA] = 0;
  	nMotorEncoder[motorB] = 0;
   	deltaX *= ONE_SQUARE;
@@ -78,7 +79,7 @@ void moveDiagonal(int deltaX, int deltaY) {
 
 /**********  MOVE PIECES  **********/
 void moveZ(bool up) {
-	displayString(6, "moveZ");
+	if (DEBUG) displayString(6, "moveZ()");
 	/* Moves the z-axis arm upward or downwards
 	   until it encounters resistance. */
 	nMotorEncoder[motorC] = 0;
@@ -99,7 +100,7 @@ void moveZ(bool up) {
 //if jump code
 
 void jump(int currentRow, int currentCol, int toRow, int toCol){
-	displayString(6, "jump");
+	if (DEBUG) displayString(6, "jump()");
   	int deltaY = toRow - currentRow;
   	int deltaX = toCol - currentCol;
 
@@ -133,7 +134,7 @@ void jump(int currentRow, int currentCol, int toRow, int toCol){
 }
 
 void step(int currentRow, int currentCol, int toRow, int toCol) {
-	displayString(6, "step");
+	if (DEBUG) displayString(6, "step()");
 	// steps one space in stated direction in separate dx and dy steps
 	int deltaY = toRow - currentRow;
   	int deltaX = toCol - currentCol;
@@ -154,7 +155,7 @@ void step(int currentRow, int currentCol, int toRow, int toCol) {
 }
 
 void removePiece(int jumpRow, int jumpCol){
-	displayString(6, "removePiece");
+	if (DEBUG) displayString(6, "removePiece()");
   	moveZ(true);			// magnet up
 	if(jumpCol<4){
 		moveLeft();
@@ -191,7 +192,7 @@ void removePiece(int jumpRow, int jumpCol){
 
 void calibrate() {		// move to -1, -1
 	// motorA is stopped when motorB is stopped by the button
-	displayString(6, "calibrate");
+	if (DEBUG) displayString(6, "calibrate()");
 	motor[motorA] = -POW;
 	motor[motorB] = -POW;
 	time1[T2] = 0;
