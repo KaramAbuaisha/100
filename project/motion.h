@@ -18,10 +18,10 @@ void getInPosition(int currentRow, int currentCol, int toRow, int toCol) {
 	if (DEBUG) displayString(6, "getInPosition()");
 	int deltaX = (toCol - currentCol);
 	int deltaY = (toRow - currentRow);
-	/*if (currentRow == -1){
-		deltaX -= 1;
-		deltaY -= 1;
-	}*/
+	if (DEBUG){
+		displayString(3, "deltaX = %d, deltaX);
+		displayString(4, "deltaY = %d, deltaY);
+	}
 	moveDiagonal(deltaX, deltaY);
 }
 
