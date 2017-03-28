@@ -52,6 +52,7 @@ void newGame(){
 
 }
 
+//User input
 void getPos(int lineNum, int &row, int &col) {
 	char cols[8] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
 	row = 3; col = 3;
