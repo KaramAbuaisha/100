@@ -77,7 +77,7 @@ void moveDiagonal(int deltaX, int deltaY) {
   			motor[motorA] = 0;
 			}
 			if((abs(nMotorEncoder[motorB])) > abs(deltaY)){
-  			motor[motorB] = 0;
+  			motor[motorB] =	 0;
 			}
 	}
 }

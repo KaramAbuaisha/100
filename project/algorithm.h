@@ -353,6 +353,12 @@ void makeMove(bool blacksTurn) {
 		if(canCapture(blacksTurn)){
 			displayString(7, "CAN CAPTURE");
 		}
+		if (blacksTurn) {
+			displayString(6, "BLACK");
+		}
+		else {
+			displayString(6, "RED");
+		}
 		displayString(0, "MOVE THIS PIECE");
 		getPos(1, currentRow, currentCol);
 		displayString(3, "TO WHERE?");

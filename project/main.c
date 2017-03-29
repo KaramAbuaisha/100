@@ -24,4 +24,9 @@ task main() {
 		makeMove(blacksTurn);				// NOTE: Need to confirm this is an actual function
 		blacksTurn = !blacksTurn;
 	}
+	eraseDisplay();
+	displayString(0, "GAME OVER");
+	displayString(2, "PRESS ANY BTN")
+	displayString(3, "TO EXIT")
+	while (nNxtButtonPressed == -1) {}
 }
