@@ -1,6 +1,6 @@
 int blackCounter = 0, redCounter = 0;
 int board[8][8];
-const bool DEBUG = true;
+const bool DEBUG = false;
 
 
 void newGame();																										// Richard
@@ -196,7 +196,7 @@ bool legalMove2(bool blacksTurn, int currentRow, int currentCol, int toRow, int 
 void anotherCapture(bool blacksTurn, int currentRow, int currentCol){
 	if (DEBUG) displayString(6, "anotherCapture()");
 	int toRow = -1, toCol = -1;
-
+	eraseDisplay();
 	while(true){
 		displayString(0, "TO WHERE?");
 		getPos(1, toRow, toCol);
@@ -238,6 +238,7 @@ void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int 
 		step(currentRow, currentCol, toRow, toCol);
 		calibrate();
 	}
+
 }
 
 
@@ -344,6 +345,7 @@ bool legalMove(bool blacksTurn, int currentRow, int currentCol, int toRow, int t
 
 
 void makeMove(bool blacksTurn) {
+	eraseDisplay();
 	if (DEBUG) displayString(6, "makeMove()");
 	int currentRow = -1, currentCol = -1, toRow = -1, toCol = -1;
 
@@ -361,6 +363,7 @@ void makeMove(bool blacksTurn) {
 			eraseDisplay();
 		}
 		else {
+			eraseDisplay();
 			break;
 		}
 	}

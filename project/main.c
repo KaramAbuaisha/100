@@ -4,6 +4,7 @@
 task main() {
 	SensorType[S4] = sensorTouch;
 	SensorType[S2] = sensorSONAR;
+	calibrate();
 	displayString(0, "GROUP 100");
 	displayString(1, "AUTOCHECKERS");
 	wait1Msec(750);
@@ -15,7 +16,6 @@ task main() {
 	displayString(2, "SET");
 	while (SensorValue[S2] > 10) {} //this value needs to be tested
 	eraseDisplay();
-	calibrate();
 
 	// GAME
 	bool blacksTurn = true;

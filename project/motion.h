@@ -1,8 +1,8 @@
-const int B_ONE_SQUARE = 150; // 2.25 inches * 25.4 mm/inch * 2pi*radius /180 = 148, where radius = 22.1mm
-const int A_ONE_SQUARE = 106; // determined experimentally
-const int B_POW = 40;
-const int A_POW = 30;
-const bool DEBUG = true;
+const int B_ONE_SQUARE = 154; // 2.25 inches * 25.4 mm/inch * 2pi*radius /180 = 148, where radius = 22.1mm
+const int A_ONE_SQUARE = 114; // determined experimentally
+const int B_POW = 50;
+const int A_POW = 40;
+const bool DEBUG = false;
 
 void getInPosition(int currentRow, int currentCol, int toRow, int toCol);	// Karam
 void moveForward();															// Karam
@@ -20,13 +20,13 @@ void getInPosition(int currentRow, int currentCol, int toRow, int toCol) {
 	if (DEBUG) displayString(6, "getInPosition()");
 	int deltaX = (toCol - currentCol);
 	int deltaY = (toRow - currentRow);
-	if (DEBUG){
-		displayString(3, "deltaX = %d", deltaX);
-		displayString(4, "deltaY = %d", deltaY);
-		wait1Msec(2000);
-	}
+	//if (DEBUG){
+		//displayString(3, "deltaX = %d", deltaX);
+		//displayString(4, "deltaY = %d", deltaY);
+		//wait1Msec(2000);
+	//}
 	moveDiagonal(deltaX, deltaY);
-	while(nNxtButtonPressed == -1){}
+	//while(nNxtButtonPressed == -1){}
 }
 
 /**********  GENERIC MOVEMENT  **********/
@@ -73,10 +73,10 @@ void moveDiagonal(int deltaX, int deltaY) {
   	motor[motorA] = -A_POW * sgn(deltaX);
   	motor[motorB] = B_POW * sgn(deltaY);
   	while(motor[motorA] != 0 || motor[motorB] != 0){
-			if((abs(nMotorEncoder[motorA])) > deltaX){
+			if((abs(nMotorEncoder[motorA])) > abs(deltaX)){
   			motor[motorA] = 0;
 			}
-			if((abs(nMotorEncoder[motorB])) > deltaY){
+			if((abs(nMotorEncoder[motorB])) > abs(deltaY)){
   			motor[motorB] = 0;
 			}
 	}
@@ -163,9 +163,9 @@ void removePiece(int jumpRow, int jumpCol){
 	if (DEBUG) displayString(6, "removePiece()");
   	moveZ(true);	// magnet up
 	moveRight();
+	jumpCol = 7 - jumpCol;
 	if ((7 - jumpRow) > jumpCol){
 		moveDiagonal(jumpCol, jumpCol);
-		jumpCol = 0;
 	}
 	else{
 		moveDiagonal(7 - jumpRow, 7 - jumpRow);
@@ -179,14 +179,15 @@ void removePiece(int jumpRow, int jumpCol){
 void calibrate() {		// move to -1, -1
 	// motorA is stopped when motorB is stopped by the button
 	if (DEBUG) displayString(6, "calibrate()");
+	moveZ(false);
 	motor[motorA] = A_POW;
 	motor[motorB] = -B_POW;
 	time1[T2] = 0;
 
-	while (time1[T2] < 10000) {		// should not take longer than 10 sec
+	while (time1[T2] < 4000) {		// should not take longer than 4 sec
 		if (SensorValue[S4] == 1) {
-			wait1Msec(100);
-			break;
+			wait1Msec(50);
+			motor[motorA] = 0;
 		}
 	}
 	motor[motorA] = 0;

@@ -2,6 +2,8 @@
 
 task main() {
 	SensorType[S4] = sensorTouch;
-	calibrate();
-  moveDiagonal(7, 7);
+
+	moveZ(true);
+  moveDiagonal(6, 6);
+  calibrate();
 }
