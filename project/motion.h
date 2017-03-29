@@ -164,13 +164,13 @@ void removePiece(int jumpRow, int jumpCol){
   	moveZ(true);	// magnet up
 	moveRight();
 	if ((7 - jumpRow) > jumpCol){
-		moveDiagonal(-jumpCol, jumpCol);
+		moveDiagonal(jumpCol, jumpCol);
 		jumpCol = 0;
 	}
 	else{
-		moveDiagonal(jumpRow-7, 7-jumpRow);
-		jumpCol += jumpRow - 7;
-		moveDiagonal(-jumpCol, -jumpCol);
+		moveDiagonal(7 - jumpRow, 7 - jumpRow);
+		jumpCol -= 7 - jumpRow;
+		moveDiagonal(jumpCol, -jumpCol);
 	}
 
 	moveZ(false);
