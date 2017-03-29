@@ -1,5 +1,7 @@
-const int ONE_SQUARE = 136; // 2.25 inches * 25.4 mm/inch * 2pi*radius /180 = 148, where radius = 22.1mm
-const int POW = 30;
+const int B_ONE_SQUARE = 150; // 2.25 inches * 25.4 mm/inch * 2pi*radius /180 = 148, where radius = 22.1mm
+const int A_ONE_SQUARE = 106; // determined experimentally
+const int B_POW = 40;
+const int A_POW = 30;
 const bool DEBUG = true;
 
 void getInPosition(int currentRow, int currentCol, int toRow, int toCol);	// Karam
@@ -19,63 +21,64 @@ void getInPosition(int currentRow, int currentCol, int toRow, int toCol) {
 	int deltaX = (toCol - currentCol);
 	int deltaY = (toRow - currentRow);
 	if (DEBUG){
-		displayString(3, "deltaX = %d, deltaX);
-		displayString(4, "deltaY = %d, deltaY);
+		displayString(3, "deltaX = %d", deltaX);
+		displayString(4, "deltaY = %d", deltaY);
 		wait1Msec(2000);
 	}
 	moveDiagonal(deltaX, deltaY);
+	while(nNxtButtonPressed == -1){}
 }
 
 /**********  GENERIC MOVEMENT  **********/
 void moveForward() {	// move one space forward
 	if (DEBUG) displayString(6, "moveForward()");
 	nMotorEncoder[motorB] = 0;
-	motor[motorB] = POW;
-	while (nMotorEncoder[motorB] < ONE_SQUARE) {}
+	motor[motorB] = B_POW;
+	while (nMotorEncoder[motorB] < B_ONE_SQUARE) {}
 	motor[motorB] = 0;
 }
 
 void moveBackward() {			// move one space backward
 	if (DEBUG) displayString(6, "moveBackward()");
 	nMotorEncoder[motorB] = 0;
-	motor[motorB] = -POW;
-	while (-nMotorEncoder[motorB] < ONE_SQUARE) {}
+	motor[motorB] = -B_POW;
+	while (-nMotorEncoder[motorB] < B_ONE_SQUARE) {}
 	motor[motorB] = 0;
 }
 
 void moveRight() {		// move ones space right
 	if (DEBUG) displayString(6, "moveRight()");
 	nMotorEncoder[motorA] = 0;
-	motor[motorA] = -POW;
-	while (-nMotorEncoder[motorA] < ONE_SQUARE) {}
+	motor[motorA] = -A_POW;
+	while (-nMotorEncoder[motorA] < A_ONE_SQUARE) {}
 	motor[motorA] = 0;
 }
 
 void moveLeft() {			// move one space left
 	if (DEBUG) displayString(6, "moveLeft()");
 	nMotorEncoder[motorA] = 0;
-	motor[motorA] = POW;
-	while (nMotorEncoder[motorA] < ONE_SQUARE) {}
+	motor[motorA] = A_POW;
+	while (nMotorEncoder[motorA] < A_ONE_SQUARE) {}
 	motor[motorA] = 0;
 }
 
 void moveDiagonal(int deltaX, int deltaY) {
 		// assumes that |deltaX| == |deltaY|
   	if (DEBUG) displayString(6, "moveDiagonal()");
-	
+
   	nMotorEncoder[motorA] = 0;
- 	nMotorEncoder[motorB] = 0;
-  	deltaX *= -ONE_SQUARE;
-	deltaY *= ONE_SQUARE;
-  	motor[motorA] = POW * sgn(deltaX);
-  	motor[motorB] = POW * sgn(deltaY);
+ 		nMotorEncoder[motorB] = 0;
+  	deltaX *= A_ONE_SQUARE;
+		deltaY *= B_ONE_SQUARE;
+  	motor[motorA] = -A_POW * sgn(deltaX);
+  	motor[motorB] = B_POW * sgn(deltaY);
   	while(motor[motorA] != 0 || motor[motorB] != 0){
-		if((abs(nMotorEncoder[motorA]) < deltaX){
+			if((abs(nMotorEncoder[motorA])) > deltaX){
   			motor[motorA] = 0;
-		}
-		if((abs(nMotorEncoder[motorB]) < deltaY){
+			}
+			if((abs(nMotorEncoder[motorB])) > deltaY){
   			motor[motorB] = 0;
-		}
+			}
 	}
 }
 
@@ -176,8 +179,8 @@ void removePiece(int jumpRow, int jumpCol){
 void calibrate() {		// move to -1, -1
 	// motorA is stopped when motorB is stopped by the button
 	if (DEBUG) displayString(6, "calibrate()");
-	motor[motorA] = POW;
-	motor[motorB] = -POW;
+	motor[motorA] = A_POW;
+	motor[motorB] = -B_POW;
 	time1[T2] = 0;
 
 	while (time1[T2] < 10000) {		// should not take longer than 10 sec
