@@ -13,7 +13,7 @@ bool legalMove2(bool blacksTurn, int currentRow, int currentCol, int toRow, int 
 void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int toCol,int jumpRow, int jumpCol);	// Richard & Karam
 void anotherCapture(bool blacksTurn, int currentRow, int currentCol);												// Karam
 void makeMove(bool blacksTurn);																						// Jin, Richard, & Karam
-void getPos(int lineNum, int &row, int &col);																		// Jin
+void getPos(bool blacksTurn, int lineNum, int &row, int &col);																		// Jin
 
 
 void newGame(){
@@ -54,17 +54,22 @@ void newGame(){
 }
 
 //User input
-void getPos(int lineNum, int &row, int &col) {
+void getPos(bool blacksTurn, int lineNum, int &row, int &col) {
 	if (DEBUG) displayString(6, "getPos()");
 	char cols[8] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
-	row = 3; col = 3;
-
+	if (blacksTurn) {
+		row = 2;
+	}
+	else {
+		row = 5;
+	}
+	col = 3;
 	while (nNxtButtonPressed != -1) {}
 
 	// select row
 	while (nNxtButtonPressed != 3) {
 		displayString(lineNum, "SELECT ROW: %d", row + 1);
-		while (nNxtButtonPressed == -1) {}
+		//while (nNxtButtonPressed == -1) {}
 		if (nNxtButtonPressed == 1 && row < 7) {  // increase, 1 is right arrow
 			++(row);
 		}
@@ -72,7 +77,7 @@ void getPos(int lineNum, int &row, int &col) {
 			--(row);
 		}
 		//while (nNxtButtonPressed != -1) {}
-		wait1Msec(500);
+		wait1Msec(300);
 	}
 
 	while (nNxtButtonPressed != -1) {}
@@ -80,7 +85,7 @@ void getPos(int lineNum, int &row, int &col) {
 	// select column
 	while (nNxtButtonPressed != 3) {
 		displayString(lineNum + 1, "SELECT COLUMN: %c", cols[col]);
-		while (nNxtButtonPressed == -1) {}
+		//while (nNxtButtonPressed == -1) {}
 		if (nNxtButtonPressed == 1 && col < 7) {
 			++(col);
 		}
@@ -88,7 +93,7 @@ void getPos(int lineNum, int &row, int &col) {
 			--(col);
 		}
 		//while (nNxtButtonPressed != -1) {}
-		wait1Msec(500);
+		wait1Msec(300);
 	}
 }
 
@@ -199,7 +204,7 @@ void anotherCapture(bool blacksTurn, int currentRow, int currentCol){
 	eraseDisplay();
 	while(true){
 		displayString(0, "TO WHERE?");
-		getPos(1, toRow, toCol);
+		getPos(blacksTurn, 1, toRow, toCol);
 		if (!legalMove2(blacksTurn, currentRow, currentCol, toRow, toCol)) {
 			displayString(3, "ILLEGAL MOVE");
 			wait1Msec(1000);
@@ -216,13 +221,16 @@ void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int 
 	board[toRow][toCol] = board[currentRow][currentCol];
 	board[currentRow][currentCol] = 0;
 	checkKing(blacksTurn);
-	getInPosition(0, 0, currentRow, currentCol);
-
+	wait1Msec(300);
 	if (jumpRow != -1){
 		board[jumpRow][jumpCol] = 0;
-		jump(currentRow, currentCol, toRow, toCol);
-		getInPosition(toRow, toCol, jumpRow, jumpCol);
+		getInPosition(0, 0, jumpRow, jumpCol);
 		removePiece(jumpRow, jumpCol);
+		calibrate();
+		getInPosition(0, 0, currentRow, currentCol);
+		jump(currentRow, currentCol, toRow, toCol);
+
+
 		calibrate();
 		if(blacksTurn){
 			redCounter += 1;
@@ -235,6 +243,7 @@ void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int 
 		}
 	}
 	else{
+		getInPosition(0, 0, currentRow, currentCol);
 		step(currentRow, currentCol, toRow, toCol);
 		calibrate();
 	}
@@ -348,8 +357,8 @@ void makeMove(bool blacksTurn) {
 	eraseDisplay();
 	if (DEBUG) displayString(6, "makeMove()");
 	int currentRow = -1, currentCol = -1, toRow = -1, toCol = -1;
-
-	while (true) {
+	bool flag = true;
+	while (flag) {
 		if(canCapture(blacksTurn)){
 			displayString(7, "CAN CAPTURE");
 		}
@@ -360,9 +369,9 @@ void makeMove(bool blacksTurn) {
 			displayString(6, "RED");
 		}
 		displayString(0, "MOVE THIS PIECE");
-		getPos(1, currentRow, currentCol);
+		getPos(blacksTurn, 1, currentRow, currentCol);
 		displayString(3, "TO WHERE?");
-		getPos(4, toRow, toCol);
+		getPos(blacksTurn, 4, toRow, toCol);
 		if (!legalMove(blacksTurn, currentRow, currentCol, toRow, toCol)) {
 			displayString(6, "ILLEGAL MOVE");
 			wait1Msec(1000);
@@ -370,7 +379,7 @@ void makeMove(bool blacksTurn) {
 		}
 		else {
 			eraseDisplay();
-			break;
+			flag = false;
 		}
 	}
 }

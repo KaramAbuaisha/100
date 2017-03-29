@@ -1,5 +1,5 @@
-const int B_ONE_SQUARE = 154; // 2.25 inches * 25.4 mm/inch * 2pi*radius /180 = 148, where radius = 22.1mm
-const int A_ONE_SQUARE = 114; // determined experimentally
+const int B_ONE_SQUARE = 148; // 2.25 inches * 25.4 mm/inch * 2pi*radius /180 = 148, where radius = 22.1mm
+const int A_ONE_SQUARE = 109; // determined experimentally
 const int B_POW = 50;
 const int A_POW = 40;
 const bool DEBUG = false;
@@ -112,27 +112,21 @@ void jump(int currentRow, int currentCol, int toRow, int toCol){
   	moveZ(true);//magnet up
 
   	if (deltaY > 0){
-    		moveForward();
 
     		if (deltaX > 0){
-      			moveDiagonal(1, 1);
-      			moveRight();
+      			moveDiagonal(2, 2);
 		 }
     		else{ //deltaX < 0
-     			moveDiagonal(-1, 1);
-      			moveLeft();
+     			moveDiagonal(-2, 2);
     			}
   		}
 
   	else{ //deltaY < 0
-   		moveBackward();
    		if (deltaX > 0){
-      			moveDiagonal(1, -1);
-     			moveRight();
+      			moveDiagonal(2, -2);
     		}
     		else{ //deltaX < 0
-      			moveDiagonal(-1, -1);
-      			moveLeft();
+      			moveDiagonal(-2, -2);
     		}
   	}
   	moveZ(false);//magnet down
@@ -183,13 +177,11 @@ void calibrate() {		// move to -1, -1
 	motor[motorA] = A_POW;
 	motor[motorB] = -B_POW;
 	time1[T2] = 0;
-
-	while (time1[T2] < 4000) {		// should not take longer than 4 sec
+	while (time1[T2] < 3000) {		// should not take longer than 4 sec
 		if (SensorValue[S4] == 1) {
 			wait1Msec(50);
 			motor[motorA] = 0;
 		}
 	}
-	motor[motorA] = 0;
 	motor[motorB] = 0;
 }

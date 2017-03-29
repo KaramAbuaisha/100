@@ -26,7 +26,7 @@ task main() {
 	}
 	eraseDisplay();
 	displayString(0, "GAME OVER");
-	displayString(2, "PRESS ANY BTN")
-	displayString(3, "TO EXIT")
+	displayString(2, "PRESS ANY BTN");
+	displayString(3, "TO EXIT");
 	while (nNxtButtonPressed == -1) {}
 }
