@@ -1,0 +1,592 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+//Global 2D Array for board
+int board[8][8]; //i is row j is col
+int AIboard[8][8];
+int TopAIboard[8][8];
+int blackCounter = 0, redCounter = 0;
+int AIMove[20];
+int miniMaxStorage[2];
+
+void newGame();
+void displayBoard(bool showID = false);   // set showID to true to represent pieces as numbers
+bool checkWinner();
+void checkKing(bool blacksTurn);
+bool canCapture(bool blacksTurn);
+bool doubleCapture(bool blacksTurn, int row, int col);
+bool legalMove(bool blacksTurn, int currentRow, int currentCol, int toRow, int toCol, bool update,bool ai);
+bool legalMove2(bool blacksTurn, int currentRow, int currentCol, int toRow, int toCol);
+void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int toCol,int jumpRow, int jumpCol);
+void anotherCapture(bool &blacksTurn, int currentRow, int currentCol);
+void makeMove(bool blacksTurn);
+int boardEvaluation();
+void allLegalMoves(bool blacksTurn);
+int* minimax(int depth, bool aiTurn);
+void updateAIBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int toCol,int jumpRow, int jumpCol);
+
+int main() {
+    bool blacksTurn = true;
+
+    newGame();
+    displayBoard();
+
+    while(!checkWinner()){
+      allLegalMoves(blacksTurn);
+      minimax(4,!blacksTurn);
+
+      cout << endl;
+      for (int i = 0; i < 2; i++){
+        cout << miniMaxStorage[i];
+      }
+
+      makeMove(blacksTurn);
+      cout << endl;
+      displayBoard();
+
+      blacksTurn = !blacksTurn;
+    }
+
+    return 0;
+}
+
+//All legal moves for the current turn turned
+//Move represented as 4 digit ints, 1st digit is X, 2nd is Y, 3rd is toX, 4th is toY ** RICHARD'S AI CODE
+void allLegalMoves(bool blacksTurn) {
+  int counter = 0;
+  AIMove[20] = {0};
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      if (board[i][j] != 0) {
+        if (legalMove(blacksTurn,i, j, i+1, j+1,false,false)) {
+          AIMove[counter++] = i * 1000 + j * 100 + (i+1) * 10 + (j+1);
+        }
+        if (legalMove(blacksTurn,i, j, i+1, j-1,false,false)) {
+          AIMove[counter++] = i * 1000 + j * 100 + (i+1) * 10 + (j-1);
+        }
+        if (legalMove(blacksTurn,i, j, i-1, j-1,false,false)) {
+          AIMove[counter++] = i * 1000 + j * 100 + (i-1) * 10 + (j-1);
+        }
+        if (legalMove(blacksTurn,i, j, i-1, j+1,false,false)) {
+          AIMove[counter++] = i * 1000 + j * 100 + (i-1) * 10 + (j+1);
+        }
+        if (legalMove(blacksTurn,i, j, i+2, j+2,false,false)) {
+          AIMove[counter++] = i * 1000 + j * 100 + (i+2) * 10 + (j+2);
+        }
+        if (legalMove(blacksTurn,i, j, i+2, j-2,false,false)) {
+          AIMove[counter++] = i * 1000 + j * 100 + (i+2) * 10 + (j-2);
+        }
+        if (legalMove(blacksTurn,i, j, i-2, j+2,false,false)) {
+          AIMove[counter++] = i * 1000 + j * 100 + (i-2) * 10 + (j+2);
+        }
+        if (legalMove(blacksTurn,i, j, i-2, j-2,false,false)) {
+          AIMove[counter++] = i * 1000 + j * 100 + (i-2) * 10 + (j-2);
+        }
+      }
+    }
+  }
+}
+
+/*Useless
+void allAILegalMoves(bool blacksTurn) {
+  int counter = 0;
+  AIMove[20] = {0};
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      if (AIboard[i][j] != 0) {
+        if (legalMove(blacksTurn,i, j, i+1, j+1,false,false)) {
+          AIMove[counter++] = i * 1000 + j * 100 + (i+1) * 10 + (j+1);
+        }
+        if (legalMove(blacksTurn,i, j, i+1, j-1,false,false)) {
+          AIMove[counter++] = i * 1000 + j * 100 + (i+1) * 10 + (j-1);
+        }
+        if (legalMove(blacksTurn,i, j, i-1, j-1,false,false)) {
+          AIMove[counter++] = i * 1000 + j * 100 + (i-1) * 10 + (j-1);
+        }
+        if (legalMove(blacksTurn,i, j, i-1, j+1,false,false)) {
+          AIMove[counter++] = i * 1000 + j * 100 + (i-1) * 10 + (j+1);
+        }
+        if (legalMove(blacksTurn,i, j, i+2, j+2,false,false)) {
+          AIMove[counter++] = i * 1000 + j * 100 + (i+2) * 10 + (j+2);
+        }
+        if (legalMove(blacksTurn,i, j, i+2, j-2,false,false)) {
+          AIMove[counter++] = i * 1000 + j * 100 + (i+2) * 10 + (j-2);
+        }
+        if (legalMove(blacksTurn,i, j, i-2, j+2,false,false)) {
+          AIMove[counter++] = i * 1000 + j * 100 + (i-2) * 10 + (j+2);
+        }
+        if (legalMove(blacksTurn,i, j, i-2, j-2,false,false)) {
+          AIMove[counter++] = i * 1000 + j * 100 + (i-2) * 10 + (j-2);
+        }
+      }
+    }
+  }
+}
+*/
+
+int boardEvaluation(){
+  //Kings are worth 3, pieces are worth 1
+  int blackWorth = 0;
+  int redWorth = 0;
+  for (int i = 0; i < 8; i++){
+    for (int j = 0; j < 8; j++){
+      if (AIboard[i][j] == 1)
+        blackWorth++;
+      if (AIboard[i][j] == 2)
+        redWorth++;
+      if (AIboard[i][j] == 3)
+        blackWorth +=3;
+      if (AIboard[i][j] == 4)
+        redWorth +=3;
+    }
+  }
+  return (redWorth - blackWorth);
+}
+
+
+
+void displayBoard(bool showID) {
+  if (showID) {
+    for (int i = 7; i >= 0; i--) {
+      for (int j = 0; j < 8; j++){
+        if (board[i][j] != 0) cout << "[" << board[i][j] << "]";
+        else cout << "[ ]";
+      }
+      cout << " " << i+1 << endl;
+    }
+  }
+  else {
+    for (int i = 7; i >= 0; i--) {
+      for (int j = 0; j < 8; j++){
+        switch (board[i][j]) {
+          case 1: cout << "[b]"; break;
+          case 2: cout << "[r]"; break;
+          case 3: cout << "[B]"; break;
+          case 4: cout << "[R]"; break;
+          default: cout << "[ ]"; break;
+        }
+      }
+      cout << " " << i+1 << endl;
+    }
+  }
+    cout << endl;
+    cout << " a  b  c  d  e  f  g  h";
+}
+
+void newGame(){
+  //I is row, J is col
+
+  for (int i = 0; i < 8;i++){
+      for (int j = 0; j < 8; j++){
+        //Setting default pieces
+
+        // //Black pieces 1
+        if (i < 3){
+          if (i%2 == 0){
+            if (j%2 == 0){
+              board[i][j] = 1;
+            }
+          }
+          else if (i%2 == 1){
+            if (j%2 == 1){
+              board[i][j] = 1;
+            }
+          }
+        }
+        else if (i > 4){
+          if (i%2 == 0){
+            if (j%2 == 0){
+              board[i][j] = 2;
+            }
+          }
+          else if (i%2 == 1){
+            if (j%2 == 1){
+              board[i][j] = 2;
+            }
+          }
+        }
+      }
+    }
+
+}
+//Checks for winner using a counter
+bool checkWinner(){
+  if(redCounter == 12 || blackCounter == 12){
+    return true;
+  }
+  else{
+  return false;
+  }
+}
+//Turns a checker piece into a king
+void checkKing(bool blacksTurn){
+  if(blacksTurn){
+    for(int j = 1; j<8; j += 2){
+      if(board[7][j] == 1){
+        board[7][j] = 3;
+      }
+    }
+  }
+  else{
+    for(int j = 0; j<8; j += 2){
+      if(board[0][j] == 2){
+        board[0][j] = 4;
+      }
+    }
+  }
+}
+
+
+
+//Checking for force captures
+bool canCapture(bool blacksTurn){
+  for (int i = 0; i < 8; i++){ //iterating through rows
+    for (int j = 0; j < 8; j++){ //iterating through columns
+
+        //Black Piece Cases
+        if (legalMove(blacksTurn,i,j,i+2,j+2,false,false)){
+          return true;
+        }
+        else if (legalMove(blacksTurn,i,j,i-2,j-2,false,false)){
+          return true;
+        }
+        //Extra King Checks
+        else if (legalMove(blacksTurn,i,j,i-2,j+2,false,false)){
+          return true;
+        }
+        else if  (legalMove(blacksTurn,i,j,i-2,j-2,false,false)){
+          return true;
+        }
+        //Red Piece Cases
+        else if (legalMove(blacksTurn,i,j,i-2,j+2,false,false)){
+          return true;
+        }
+        else if  (legalMove(blacksTurn,i,j,i-2,j-2,false,false)){
+          return true;
+        }
+        //Extra King Checks
+        else if (legalMove(blacksTurn,i,j,i+2,j+2,false,false)){
+          return true;
+        }
+        else if (legalMove(blacksTurn,i,j,i+2,j-2,false,false)){
+          return true;
+        }
+    }
+    }
+    return false;
+}
+
+
+bool doubleCapture(bool blacksTurn, int row, int col){
+  if (blacksTurn){
+    //Black Piece Cases
+    if ( (board[row][col] == 1 || board[row][col] == 3) && col < 6 && row < 6 &&  ((board[row+1][col+1] == 2 || board[row+1][col+1] == 4) && (board[row+2][col+2] == 0))){
+      return true;
+    }
+    else if ( (board[row][col] == 1 || board[row][col] == 3) && col > 1 && row < 6 &&  ((board[row+1][col-1] == 2 || board[row+1][col-1] == 4) && (board[row+2][col-2] == 0))){
+      return true;
+    }
+
+    //Extra King Checks
+    else if (board[row][col] == 3 && col < 6 && row > 1 && ( ((board[row-1][col+1] == 2) || (board[row-1][col+1] == 4)) && (board[row-2][col+2] == 0))){
+      return true;
+    }
+    else if  (board[row][col] == 3 && col > 1 && row > 1 && ( ((board[row-1][col-1] == 2 || board[row-1][col-1] == 4 )) && (board[row-2][col-2] == 0))){
+      return true;
+    }
+  }
+  else{
+    //Red Piece Cases
+    if ((board[row][col] == 2 || board[row][col] == 4) && col < 6 && row > 1 && ((board[row-1][col+1] == 1 || board[row-1][col+1] == 3) && (board[row-2][col+2] == 0))){
+      return true;
+    }
+    else if  ((board[row][col] == 2 || board[row][col] == 4) && col > 1 && row > 1 && ((board[row-1][col-1] == 1 || board[row-1][col-1] == 3) && (board[row-2][col-2] == 0))){
+      return true;
+    }
+    //Extra King Checks
+    else if (board[row][col] == 4 && col < 6 && row < 6 &&  ( ((board[row+1][col+1] == 1 || board[row+1][col+1] == 3)) && (board[row+2][col+2] == 0))){
+      return true;
+    }
+    else if  (board[row][col] == 4 && col > 1 && row < 6 &&  (((board[row+1][col-1] == 1 || board[row+1][col-1] == 3)) && (board[row+2][col-2] == 0))){
+      return true;
+    }
+  }
+  return false;
+}
+
+void updateBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int toCol,int jumpRow, int jumpCol){
+  board[toRow][toCol] = board[currentRow][currentCol];
+  board[currentRow][currentCol] = 0;
+  checkKing(blacksTurn);
+  if (jumpRow != -1){
+    board[jumpRow][jumpCol] = 0;
+    //run move function
+    //run remove captured piece function
+    if(blacksTurn){
+      redCounter += 1;
+    }
+    else{
+      blackCounter +=1;
+    }
+    if(doubleCapture(blacksTurn, toRow, toCol)){
+      displayBoard();
+      anotherCapture(blacksTurn, toRow, toCol);
+    }
+  }
+  else{
+    //run diagonal moving function
+  }
+}
+
+
+//Checks if a move is legal, returns a boolean, called by the makeMove
+bool legalMove(bool blacksTurn, int currentRow, int currentCol, int toRow, int toCol, bool update, bool ai){
+  //Legal move conditions, 1 diagonal, jump over piece, jump over multiple pieces - will be hard to implement
+
+  int jumpRow = -1, jumpCol = -1;
+  bool legal = false;
+  //Check if a piece moves single piece diagonally
+
+  //cout << endl << currentRow << currentCol << toRow << toCol << endl;
+  if (toCol > 7 || toRow > 7 || toCol < 0 || toRow < 0)
+    return false;
+  //Black moves
+  if (blacksTurn){
+    if (( (toRow - currentRow) == 1) && (abs(toCol - currentCol) == 1) && (board[currentRow][currentCol] == 1) && (board[toRow][toCol] == 0) ){
+      legal = true;
+    }
+    else if ( (abs(toRow - currentRow) == 1) && (abs(toCol - currentCol) == 1) && (board[currentRow][currentCol] == 3) && (board[toRow][toCol] == 0) ){
+      legal = true;
+    }
+    //Jumps
+    else if ( (toRow - currentRow == 2) && (abs(toCol - currentCol) == 2) && (board[currentRow][currentCol] == 1) && board[toRow][toCol] == 0 && (board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 2 || board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 4)){
+      jumpRow = (toRow+currentRow)/2;
+      jumpCol = (toCol+currentCol)/2;
+      legal = true;
+    }
+    else if( (abs(toRow - currentRow) == 2) && (abs(toCol - currentCol) == 2) && (board[currentRow][currentCol] == 3) && board[toRow][toCol] == 0 && (board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 2 || board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 4)){
+      jumpRow = (toRow+currentRow)/2;
+      jumpCol = (toCol+currentCol)/2;
+      legal = true;
+    }
+  }
+
+  //Red moves
+  else{
+    if (( (toRow - currentRow) == -1) && (abs(toCol - currentCol) == 1) && (board[currentRow][currentCol] == 2) && (board[toRow][toCol] == 0) ){
+      legal = true;
+    }
+    else if ( (abs(toRow - currentRow) == 1) && (abs(toCol - currentCol) == 1) && (board[currentRow][currentCol] == 4) && (board[toRow][toCol] == 0) ){
+      legal = true;
+    }
+    //Jumps
+    else if ( (toRow - currentRow == -2) && (abs(toCol - currentCol) == 2) && (board[currentRow][currentCol] == 2) && board[toRow][toCol] == 0 && (board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 1 || board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 3)){
+      jumpRow = (toRow+currentRow)/2;
+      jumpCol = (toCol+currentCol)/2;
+      legal = true;
+    }
+    else if( (abs(toRow - currentRow) == 2) && (abs(toCol - currentCol) == 2) && (board[currentRow][currentCol] == 4) && board[toRow][toCol] == 0 && (board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 1 || board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 3)){
+      jumpRow = (toRow+currentRow)/2;
+      jumpCol = (toCol+currentCol)/2;
+      legal = true;
+    }
+  }
+
+  if (legal && update){
+    updateBoard(blacksTurn, currentRow,currentCol,toRow,toCol,jumpRow,jumpCol);
+  }
+  if (ai){
+    updateAIBoard(blacksTurn, currentRow,currentCol,toRow,toCol,jumpRow,jumpCol);
+  }
+  return legal;
+}
+
+
+bool legalMove2(bool blacksTurn, int currentRow, int currentCol, int toRow, int toCol){
+//Legal move conditions for dnd capture, jumps only
+
+  int jumpRow = -1, jumpCol = -1;
+  bool legal = false;
+
+
+
+  //Black moves
+  if (blacksTurn){
+    //Jumps
+    if ( (toRow - currentRow == 2) && (abs(toCol - currentCol) == 2) && (board[currentRow][currentCol] == 1) && board[toRow][toCol] == 0 && (board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 2 || board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 4)){
+      jumpRow = (toRow+currentRow)/2;
+      jumpCol = (toCol+currentCol)/2;
+      legal = true;
+    }
+    else if( (abs(toRow - currentRow) == 2) && (abs(toCol - currentCol) == 2) && (board[currentRow][currentCol] == 3) && board[toRow][toCol] == 0 && (board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 2 || board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 4)){
+      jumpRow = (toRow+currentRow)/2;
+      jumpCol = (toCol+currentCol)/2;
+      legal = true;
+    }
+  }
+
+  //Red moves
+  else{
+    //Jumps
+    if ( (toRow - currentRow == -2) && (abs(toCol - currentCol) == 2) && (board[currentRow][currentCol] == 2) && board[toRow][toCol] == 0 && (board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 1 || board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 3)){
+      jumpRow = (toRow+currentRow)/2;
+      jumpCol = (toCol+currentCol)/2;
+      legal = true;
+    }
+    else if( (abs(toRow - currentRow) == 2) && (abs(toCol - currentCol) == 2) && (board[currentRow][currentCol] == 4) && board[toRow][toCol] == 0 && (board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 1 || board[(toRow+currentRow)/2][(toCol+currentCol)/2] == 3)){
+      jumpRow = (toRow+currentRow)/2;
+      jumpCol = (toCol+currentCol)/2;
+      legal = true;
+    }
+  }
+
+  if (legal){
+    updateBoard(blacksTurn, currentRow,currentCol,toRow,toCol,jumpRow,jumpCol);
+  }
+  return legal;
+}
+
+
+void anotherCapture(bool &blacksTurn, int currentRow, int currentCol){
+  int toRow = -1, toCol = -1;
+  string to = "x";
+  do{
+    cout<<endl<<"Second capture, to where?"<<endl;
+    cin>>to;
+    toCol = to.at(0) - 97;
+    toRow = to.at(1) - '0' - 1;
+    cout << currentRow << currentCol <<endl<<toRow << toCol;
+  }while(abs(toRow-currentRow) == 1 || abs(toCol-currentCol) == 1
+  || !legalMove2(blacksTurn,currentRow,currentCol,toRow,toCol));
+}
+
+void makeMove(bool blacksTurn){
+
+  bool aiGame = true;
+
+  if (aiGame){
+
+
+      int currentCol = miniMaxStorage[1]/100%10;
+      int currentRow = miniMaxStorage[1]/1000;
+
+      int toCol = miniMaxStorage[1]%10;
+      int toRow = miniMaxStorage[1]/10%10;
+      cout << currentRow << currentCol << toRow << toCol;
+      legalMove(blacksTurn,currentRow,currentCol,toRow,toCol,true,false);
+
+  }
+  else
+  {
+    int currentRow = -1, currentCol = -1, toRow = -1, toCol = -1;
+    string curr = "X", to = "X";
+
+    cout << endl << "Force? " << canCapture(blacksTurn); // DEBUGGINGPURPOSE
+    do {
+      cout << endl << "Which piece would you like to move? ";
+      cin >> curr;
+      cout << "To where? ";
+      cin >> to;
+
+      cout << endl;
+
+      currentCol = curr.at(0) - 97; //Converts letter input to an integer number, COLUMN INPUT
+      currentRow = curr.at(1) - '0' - 1; //Converts char number to integer number, ROW INPUT
+
+      toCol = to.at(0) - 97;
+      toRow = to.at(1) - '0' - 1;
+    } while (!legalMove(blacksTurn,currentRow,currentCol,toRow,toCol,true,false));
+  }
+  }
+
+
+
+
+void updateAIBoard(bool blacksTurn, int currentRow,int currentCol, int toRow, int toCol,int jumpRow, int jumpCol){
+  AIboard[toRow][toCol] = AIboard[currentRow][currentCol];
+  AIboard[currentRow][currentCol] = 0;
+  checkKing(blacksTurn);
+  if (jumpRow != -1){
+    AIboard[jumpRow][jumpCol] = 0;
+    //run move function
+    //run remove captured piece function
+    if(blacksTurn){
+      redCounter += 1;
+    }
+    else{
+      blackCounter +=1;
+    }
+    if(doubleCapture(blacksTurn, toRow, toCol)){
+      displayBoard();
+      anotherCapture(blacksTurn, toRow, toCol);
+    }
+  }
+  else{
+    //run diagonal moving function
+  }
+}
+
+//** RICHARD'S AI CODE
+//Setting depth limit to 2 to test
+
+int* minimax(int depth, bool aiTurn){
+  int bestScore = 0, current = 0, bestMove = 0;
+  bool flag = true;
+
+  if (depth == 4){
+    for (int i = 0; i < 8;i++){
+      for (int j = 0; j < 8; j++){
+        AIboard[i][j] = board[i][j];
+      }
+    }
+  }
+
+ //Saving original board data
+  int tempBoard[8][8];
+  for (int i = 0; i<8; i++){
+    for (int j = 0; j < 8; j++){
+      tempBoard[i][j] == AIboard[i][j];
+    }
+  }
+  if (depth == 0){
+    bestScore = boardEvaluation();
+  }
+  else{
+    int i = 0;
+    while (AIMove[i] != 0){
+      legalMove(!aiTurn,AIMove[i]/1000,AIMove[i]%1000/100,AIMove[i]%100/10,AIMove[i]%10,false,true);
+      if (aiTurn){ // Maximizing for the AI
+        current = minimax(depth-1,!aiTurn)[0];
+          //Sets best score to first score
+          if (flag){
+            bestScore = current;
+            bestMove = AIMove[i];
+            flag = false;
+          }
+          if (bestScore > current){
+            bestScore = current;
+            bestMove = AIMove[i];
+          }
+      }
+      else{ //Minimizing for the human
+        current = minimax(depth-1,!aiTurn)[0];
+          if (bestScore < current){
+            bestScore = current;
+            bestMove = AIMove[i];
+          }
+        }
+        i++;
+      }
+    }
+
+  for (int i = 0; i<8; i++){
+    for (int j = 0; j < 8; j++){
+      AIboard[i][j] == tempBoard[i][j];
+    }
+  }
+
+  miniMaxStorage[0] = bestScore;
+  miniMaxStorage[1] = bestMove;
+  return miniMaxStorage;
+}
