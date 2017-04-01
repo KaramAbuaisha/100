@@ -1,11 +1,10 @@
-#include <algorithm.c>
-#include <motion.c>
-int board[8][8];
-int blackCounter = 0, whiteCounter = 0;
+#include "motion.h"
+#include "algorithm.h"
 
 task main() {
-	SensorType[S1] = sensorTouch;
+	SensorType[S4] = sensorTouch;
 	SensorType[S2] = sensorSONAR;
+	calibrate();
 	displayString(0, "GROUP 100");
 	displayString(1, "AUTOCHECKERS");
 	wait1Msec(750);
@@ -25,4 +24,9 @@ task main() {
 		makeMove(blacksTurn);				// NOTE: Need to confirm this is an actual function
 		blacksTurn = !blacksTurn;
 	}
+	eraseDisplay();
+	displayString(0, "GAME OVER");
+	displayString(2, "PRESS ANY BTN");
+	displayString(3, "TO EXIT");
+	while (nNxtButtonPressed == -1) {}
 }
